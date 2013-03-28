@@ -4,10 +4,15 @@
 
 
 login(Username, Password, TenantID) ->
-	Body = string:join(["{\"auth\":{\"passwordCredentials\":{",
-						"\"username\":\"", Username,
-						"\",\"password\":\"", Password, "\"},"
-						"\"tenantId\":\"", TenantID, "\"}}"], ""),
+	Body = create_auth_body(Username, Password, TenantID),
 	io:format("~p~n", [Body]),
-	httpc:request(post, {string:concat(?REGION_URL, "tokens"), ["accept", "application/json"],
+	httpc:request(post, {string:concat(?REGION_URL, "tokens"),
+                         ["accept", "application/json"],
 						 "application/json", Body}, [], []).
+
+create_auth_body(Username, Password, TenantID) ->
+    Body = "{\"auth\":{\"passwordCredentials\":{\"username\":\"~s\",\"password\":\"~s\"},\"tenantId\":\"~s\"}}",
+    printf(Body, [Username, Password, TenantID]).
+
+printf(Format, Args) ->
+    lists:flatten(io_lib:format(Format, Args)).
