@@ -23,7 +23,8 @@ handle_info(_Message, Library) ->
 terminate(_Reason, _Library) -> ok.
 
 start(State) ->
-	gen_server:start_link(?MODULE, [State], []).
+	gen_server:start_link(?MODULE, State, []).
+
 extract_authtoken(LoginResp) ->
 	Access = proplists:get_value(<<"access">>, LoginResp),
 	Token = proplists:get_value(<<"token">>, Access),
