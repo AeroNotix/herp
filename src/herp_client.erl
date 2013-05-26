@@ -10,7 +10,8 @@ init(LoginResp) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-handle_call(_What, _From, State) ->
+handle_call({hey, Value}, _From, State) ->
+	io:format("~p~n", [State]),
 	{reply, ok, State}.
 
 %% We don't have any specific needs for these yet but we need to over-
