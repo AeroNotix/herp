@@ -10,9 +10,9 @@ login(Username, Password, TenantID) ->
 																"application/json", Body}, [], []),
 	case Status of
 		200 ->
-			io:format(jsx:decode(list_to_binary(Resp)));
-		Else ->
-			io:format(Else)
+			jsx:decode(list_to_binary(Resp));
+		_Else ->
+			{error, Status}
 	end.
 			
 
