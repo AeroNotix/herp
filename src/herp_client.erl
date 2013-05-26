@@ -4,8 +4,8 @@
 %% gen_server behaviour
 -export([start/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
-init(Args) ->
-    {ok, [Args]}.
+init(LoginResp) ->
+	{ok, [LoginResp, extract_authtoken(LoginResp)]}.
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
@@ -23,3 +23,9 @@ terminate(_Reason, _Library) -> ok.
 
 start(State) ->
 	gen_server:start_link(?MODULE, [State], []).
+extract_authtoken(LoginResp) ->
+	Access = proplists:get_value(<<"access">>, LoginResp),
+	Token = proplists:get_value(<<"token">>, Access),
+	AuthToken = proplists:get_value(<<"id">>, Token),
+	Expires = proplists:get_value(<<"expires">>, Token),
+	{Access, AuthToken, Expires}.
