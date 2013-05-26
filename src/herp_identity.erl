@@ -10,7 +10,7 @@ login(Username, Password, TenantID) ->
 																"application/json", Body}, [], []),
 	case Status of
 		200 ->
-			jsx:decode(list_to_binary(Resp));
+			herp_client:start(jsx:decode(list_to_binary(Resp)));
 		_Else ->
 			{error, Status}
 	end.
