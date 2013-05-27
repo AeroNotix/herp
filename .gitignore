@@ -1,3 +1,5 @@
 *.dump
 *.beam
 deps/*
+config/*
+_rel/*
