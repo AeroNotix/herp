@@ -6,7 +6,10 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  inets,
+                  ssl,
+                  runtime_tools
                  ]},
   {mod, { herp_app, []}},
   {env, []}
