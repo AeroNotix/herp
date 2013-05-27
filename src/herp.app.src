@@ -1,7 +1,7 @@
 %% -*- mode: Erlang;-*-
 {application, herp,
  [
-  {description, "HPClound bindings"},
+  {description, "HPCloud bindings"},
   {vsn, "1"},
   {registered, []},
   {applications, [
