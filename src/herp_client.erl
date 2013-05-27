@@ -4,14 +4,17 @@
 %% gen_server behaviour
 -export([start/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
+%% Client API
+-export([list/1,list/2]).
+
 init(LoginResp) ->
 	{ok, [LoginResp, extract_authtoken(LoginResp)]}.
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-handle_call({hey, Value}, _From, State) ->
-	io:format("~p~n", [State]),
+handle_call({list, Container}, _From, State) ->
+	io:format("~p ~p~n", [State, Container]),
 	{reply, ok, State}.
 
 %% We don't have any specific needs for these yet but we need to over-
@@ -31,3 +34,13 @@ extract_authtoken(LoginResp) ->
 	AuthToken = proplists:get_value(<<"id">>, Token),
 	Expires = proplists:get_value(<<"expires">>, Token),
 	{Access, AuthToken, Expires}.
+
+%% Client-functions
+%%
+%% list_containers will list all the containers for your account,
+%% list/1 will list all the base containers and list/2 will list all
+%% the subcontainers for what you provide.
+list(Pid) ->
+    gen_server:call(Pid, {list, ""}).
+list(Pid, Container) ->
+    gen_server:call(Pid, {list, Container}).
