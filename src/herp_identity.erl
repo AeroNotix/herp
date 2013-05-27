@@ -14,7 +14,12 @@ login(Username, Password, TenantID) ->
 		_Else ->
 			{error, Status}
 	end.
-			
+
+login_conf() ->
+    {ok, Username} = application:get_env(herp, username),
+    {ok, Password} = application:get_env(herp, password),
+    {ok, TenantID} = application:get_env(herp, tenant_id),
+    login(Username, Password, TenantID).
 
 create_auth_body(Username, Password, TenantID) ->
 	U = list_to_binary(Username),
