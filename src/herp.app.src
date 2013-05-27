@@ -1,0 +1,14 @@
+%% -*- mode: Erlang;-*-
+{application, herp,
+ [
+  {description, "HPClound bindings"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { herp_app, []}},
+  {env, []}
+ ]
+}.
