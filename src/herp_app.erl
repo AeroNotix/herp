@@ -16,7 +16,7 @@ start(_StartType, _StartArgs) ->
             ProxyPort = application:get_env(proxyport),
             httpc:set_options([{proxy, {{ProxyAddress, ProxyPort},
                                         ["localhost"]}}]);
-        false ->
+        _Else ->
             ok
     end,
     herp_sup:start_link().
