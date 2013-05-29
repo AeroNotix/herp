@@ -5,7 +5,7 @@
 
 login(Username, Password, TenantID) ->
 	Body = create_auth_body(Username, Password, TenantID),
-	{ok, {{_HTTP, Status, _Msg}, Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
                                                                          ["accept", "application/json"],
                                                                          "application/json", Body}, [], []),
 	case Status of
