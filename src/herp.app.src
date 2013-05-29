@@ -9,6 +9,8 @@
                   stdlib,
                   inets,
                   ssl,
+                  public_key,
+                  crypto,
                   runtime_tools
                  ]},
   {mod, { herp_app, []}},
