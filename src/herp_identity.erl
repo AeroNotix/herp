@@ -8,12 +8,13 @@ login(Username, Password, TenantID) ->
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
                                                                          ["accept", "application/json"],
                                                                          "application/json", Body}, [], []),
-	case Status of
-		200 ->
-			herp_client:start({jsx:decode(list_to_binary(Resp)), TenantID});
-		_Else ->
-			{error, Status}
-	end.
+	Pid = case Status of
+			  200 ->
+				  supervisor:start_child({global, herp_sup}, [{jsx:decode(list_to_binary(Resp)), TenantID}]);
+			  _Else ->
+				  {error, Status}
+		  end,
+	Pid.
 
 login_conf() ->
     {ok, Username} = application:get_env(herp, username),

@@ -4,7 +4,7 @@
 -define(OBJECT_URL, "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
 
 %% gen_server behaviour
--export([start/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
+-export([start_link/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
 %% Client API
 -export([list/1,list/2]).
@@ -39,7 +39,7 @@ handle_info(_Message, Library) ->
     {noreply, Library}.
 terminate(_Reason, _Library) -> ok.
 
-start(State) ->
+start_link(State) ->
 	gen_server:start_link(?MODULE, State, []).
 
 extract_authtoken(LoginResp) ->
