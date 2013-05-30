@@ -7,8 +7,12 @@
 %% Client API
 -export([list/1,list/2]).
 
-init(LoginResp) ->
-	{ok, [LoginResp, extract_authtoken(LoginResp)]}.
+-record(client, {access, tokenid, expires}).
+
+init({LoginResp, TokenID}) ->
+	ClientRec = extract_authtoken(LoginResp),
+	ClientRec2 = ClientRec#client{tokenid=TokenID},
+	{ok, ClientRec2}.
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
@@ -33,7 +37,7 @@ extract_authtoken(LoginResp) ->
 	Token = proplists:get_value(<<"token">>, Access),
 	AuthToken = proplists:get_value(<<"id">>, Token),
 	Expires = proplists:get_value(<<"expires">>, Token),
-	{Access, AuthToken, Expires}.
+	#client{access=binary_to_list(AuthToken), expires=Expires}.
 
 %% Client-functions
 %%
