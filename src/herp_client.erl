@@ -20,8 +20,16 @@ code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
 handle_call({list, Container}, _From, State) ->
-	io:format("~p ~p~n", [State, Container]),
-	{reply, ok, State}.
+	URL = case Container of
+			  "" ->
+				  string:concat(?OBJECT_URL, State#client.tokenid);
+			  _Else ->
+				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
+			  end,
+	{ok, {{_HTTP, _Status, _Msg}, _Headers, Resp}} = httpc:request(get, {URL,
+																		 [{"accept", "application/json"},
+																		  {"X-Auth-Token", State#client.access}]}, [], []),
+	{reply, jsx:decode(list_to_binary(Resp)), State}.
 
 %% We don't have any specific needs for these yet but we need to over-
 %% ride them for the gen_server behaviour.
