@@ -12,7 +12,6 @@
 start(_StartType, _StartArgs) ->
     case application:get_env(herp, has_proxy) of
         {ok, true} ->
-            io:format("here~n"),
             {ok, ProxyAddress} = application:get_env(proxyaddr),
             {ok, ProxyPort} = application:get_env(proxyport),
             httpc:set_options([{proxy, {{ProxyAddress, ProxyPort},
