@@ -25,7 +25,7 @@ handle_call({list, Container}, _From, State) ->
 				  string:concat(?OBJECT_URL, State#client.tokenid);
 			  _Else ->
 				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
-			  end,
+		  end,
 	{ok, {{_HTTP, _Status, _Msg}, _Headers, Resp}} = httpc:request(get, {URL,
 																		 [{"accept", "application/json"},
 																		  {"X-Auth-Token", State#client.access}]}, [], []),
