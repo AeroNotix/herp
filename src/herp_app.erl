@@ -15,7 +15,9 @@ start(_StartType, _StartArgs) ->
             {ok, ProxyAddress} = application:get_env(proxyaddr),
             {ok, ProxyPort} = application:get_env(proxyport),
             httpc:set_options([{proxy, {{ProxyAddress, ProxyPort},
-                                        ["localhost"]}}]);
+                                        ["localhost"]}},
+                               {https_proxy, {{ProxyAddress, ProxyPort},
+                                              ["localhost"]}}]);
         _Else ->
             ok
     end,
