@@ -21,6 +21,7 @@ start(_StartType, _StartArgs) ->
         _Else ->
             ok
     end,
+    httpc:set_options([{socket, {verify, verify_none}}]),
     herp_sup:start_link().
 
 stop(_State) ->
