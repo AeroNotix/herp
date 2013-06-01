@@ -9,8 +9,14 @@
 %% Client API
 -export([list/1,list/2]).
 
+%% A client record encapsulates the three most important pieces
+%% of information which needs to be stored about a client session.
 -record(client, {access, tokenid, expires}).
 
+%% @doc initializes a new gen_server Pid of our herp_client.
+%% @spec init({LoginResp::string(), TokenID::string()}) -> {ok, Pid}
+%% where
+%%   Pid = pid()
 init({LoginResp, TokenID}) ->
 	ClientRec = extract_authtoken(LoginResp),
 	ClientRec2 = ClientRec#client{tokenid=TokenID},
@@ -19,6 +25,7 @@ init({LoginResp, TokenID}) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+%% @doc Lists the containers on the objectstore/CDN service.
 handle_call({list, Container}, _From, State) ->
 	URL = case Container of
 			  "" ->
@@ -49,12 +56,15 @@ extract_authtoken(LoginResp) ->
 	Expires = proplists:get_value(<<"expires">>, Token),
 	#client{access=binary_to_list(AuthToken), expires=Expires}.
 
-%% Client-functions
-%%
-%% list_containers will list all the containers for your account,
-%% list/1 will list all the base containers and list/2 will list all
-%% the subcontainers for what you provide.
-list(Pid) ->
-    gen_server:call(Pid, {list, ""}).
-list(Pid, Container) ->
-    gen_server:call(Pid, {list, Container}).
+%% @doc
+%% list/1 will list all the base containers which are available to
+%% your account.
+%% @spec list(Client::pid()) -> [string()]
+list(Client) ->
+    gen_server:call(Client, {list, ""}).
+%% @doc
+%% list/2 will list all the subcontainers under the container name
+%% which are available to your account.
+%% @spec list(Client::pid(), Container::string()) -> [string()]
+list(Client, Container) ->
+    gen_server:call(Client, {list, Container}).
