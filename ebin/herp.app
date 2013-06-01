@@ -2,7 +2,7 @@
              [{description,"HPCloud bindings"},
               {vsn,"1"},
               {registered,[]},
-              {applications,[kernel,stdlib,inets,ssl,public_key,crypto,
+              {applications,[kernel,stdlib,edoc,inets,ssl,public_key,crypto,
                              runtime_tools]},
               {mod,{herp_app,[]}},
               {env,[]},
