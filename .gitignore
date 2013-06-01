@@ -3,4 +3,7 @@
 deps/*
 config/*
 _rel/*
-docs/*.html
+doc/*.html
+doc/*.png
+doc/edoc-info
+doc/*.css
