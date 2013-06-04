@@ -55,10 +55,11 @@ start_link() ->
 %%          {error, Reason}   
 %%--------------------------------------------------------------------
 init(_Args) ->
-    {ok, {{simple_one_for_one, 3, 60}, 
-          [{herp_client, {herp_client, start_link, []},
-            transient, 5000, worker, [herp_client]}
-          ]}}.
+    ClientWorkers = {herp_client, {herp_client, start_link, []},
+                     transient, 5000, worker, [herp_client]},
+    Children = [ClientWorkers],
+    RestartStrategy = {simple_one_for_one, 3, 60},
+    {ok, {RestartStrategy, Children}}.
 
 %%====================================================================
 %% Internal functions
