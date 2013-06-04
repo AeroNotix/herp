@@ -1,7 +1,7 @@
 RELNAME=herp
 
 all:
-	rebar compile; relx
+	rebar get-deps; rebar compile; relx
 
 run:
 	_rel/bin/$(RELNAME) console
