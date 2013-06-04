@@ -5,14 +5,16 @@
   {vsn, "1"},
   {registered, []},
   {applications, [
-                  kernel,
-                  stdlib,
                   asn1,
-                  inets,
-                  ssl,
-                  public_key,
+                  appmon,
+                  gs,
                   crypto,
-                  runtime_tools
+                  inets,
+                  kernel,
+                  public_key,
+                  runtime_tools,
+                  ssl,
+                  stdlib
                  ]},
   {mod, { herp_app, []}},
   {env, []}

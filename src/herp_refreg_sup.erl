@@ -1,11 +1,11 @@
 %%%-------------------------------------------------------------------
-%%% File    : herp_sup.erl
-%%% Author  : passwd aero <aero@archtop.emea.hpqcorp.net>
+%%% File    : herp_refreg_sup.erl
+%%% Author  :  <xeno@localhost>
 %%% Description : 
 %%%
-%%% Created : 27 May 2013 by passwd aero <aero@archtop.emea.hpqcorp.net>
+%%% Created :  4 Jun 2013 by  <xeno@localhost>
 %%%-------------------------------------------------------------------
--module(herp_sup).
+-module(herp_refreg_sup).
 
 -behaviour(supervisor).
 %%--------------------------------------------------------------------
@@ -43,7 +43,7 @@
 %% Description: Starts the supervisor
 %%--------------------------------------------------------------------
 start_link() ->
-	supervisor:start_link({local, ?SERVER}, ?MODULE, []).
+    supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
 %%====================================================================
 %% Server functions
@@ -54,15 +54,11 @@ start_link() ->
 %%          ignore                          |
 %%          {error, Reason}   
 %%--------------------------------------------------------------------
-init(_Args) ->
-    ClientWorkers = {herp_client_sup, {herp_client_sup, start_link, []},
-                     transient, 5000, worker, [herp_client_sup]},
-
-    RefRegSup = {herp_refreg_sup, {herp_refreg_sup, start_link, []},
-                 permanent, 5000, supervisor, [herp_refreg_sup]},
-
-    Children = [ClientWorkers, RefRegSup],
-    RestartStrategy = {one_for_one, 3, 60},
+init([]) ->
+    RefRegister = {herp_refreg, {herp_refreg, start_link, []},
+                   permanent, 2000, worker, [herp_refreg]},
+    Children = [RefRegister],
+    RestartStrategy = {one_for_all, 3, 60},
     {ok, {RestartStrategy, Children}}.
 
 %%====================================================================

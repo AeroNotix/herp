@@ -2,8 +2,9 @@
              [{description,"HPCloud bindings"},
               {vsn,"1"},
               {registered,[]},
-              {applications,[kernel,stdlib,asn1,inets,ssl,public_key,crypto,
-                             runtime_tools]},
+              {applications,[asn1,appmon,gs,crypto,inets,kernel,public_key,
+                             runtime_tools,ssl,stdlib]},
               {mod,{herp_app,[]}},
               {env,[]},
-              {modules,[herp_app,herp_client,herp_identity,herp_sup]}]}.
+              {modules,[herp_app,herp_client,herp_client_sup,herp_identity,
+                        herp_refreg,herp_refreg_sup,herp_sup]}]}.
