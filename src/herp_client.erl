@@ -22,9 +22,10 @@
 %% where
 %%   Pid = pid()
 init({Body, TokenID, Ref}) ->
-	Response = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
-									["accept", "application/json"],
-									"application/json", Body}, [], []),
+	Request = {string:concat(?REGION_URL, "tokens"),
+			   ["accept", "application/json"],
+			   "application/json", Body},
+	Response = httpc:request(post, Request, [], []),
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
 	case Status of
 		200 ->
@@ -48,9 +49,9 @@ handle_call({list, Container}, _From, State) ->
 			  _Else ->
 				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
 		  end,
-	Response = httpc:request(get, {URL,
-								   [{"accept", "application/json"},
-									{"X-Auth-Token", State#client.access}]}, [], []),
+	Request = {URL, [{"accept", "application/json"},
+					 {"X-Auth-Token", State#client.access}]},
+	Response = httpc:request(get, Request, [], []),
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
 	case Status of
 		200 ->
