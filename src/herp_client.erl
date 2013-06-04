@@ -28,6 +28,7 @@ init({Body, TokenID, Ref}) ->
             LoginResp = jsx:decode(list_to_binary(Resp)),
             ClientRec = extract_authtoken(LoginResp),
             ClientRec2 = ClientRec#client{tokenid=TokenID},
+            ok = herp_refreg:register(Ref, self()),
             {ok, ClientRec2};
         _Else ->
             {stop, Status}
