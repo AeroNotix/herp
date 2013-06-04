@@ -26,19 +26,19 @@ init({Body, TokenID, Ref}) ->
 									["accept", "application/json"],
 									"application/json", Body}, [], []),
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-    case Status of
-        200 ->
-            LoginResp = jsx:decode(list_to_binary(Resp)),
-            ClientRec = extract_authtoken(LoginResp),
-            ClientRec2 = ClientRec#client{tokenid=TokenID},
-            ok = herp_refreg:register(Ref, self()),
-            {ok, ClientRec2};
-        _Else ->
-            {stop, Status}
-    end.
+	case Status of
+		200 ->
+			LoginResp = jsx:decode(list_to_binary(Resp)),
+			ClientRec = extract_authtoken(LoginResp),
+			ClientRec2 = ClientRec#client{tokenid=TokenID},
+			ok = herp_refreg:register(Ref, self()),
+			{ok, ClientRec2};
+		_Else ->
+			{stop, Status}
+	end.
 
 code_change(_OldVsn, State, _Extra) ->
-    {ok, State}.
+	{ok, State}.
 
 %% @doc Lists the containers on the objectstore/CDN service.
 handle_call({list, Container}, _From, State) ->
@@ -62,9 +62,9 @@ handle_call({list, Container}, _From, State) ->
 %% We don't have any specific needs for these yet but we need to over-
 %% ride them for the gen_server behaviour.
 handle_cast(_Request, State) ->
-    {noreply, State}.
+	{noreply, State}.
 handle_info(_Message, Library) ->
-    {noreply, Library}.
+	{noreply, Library}.
 terminate(_Reason, _Library) -> ok.
 
 start_link(State) ->
@@ -82,18 +82,18 @@ extract_authtoken(LoginResp) ->
 %% your account.
 %% @spec list(Client::pid()) -> [string()]
 list(ClientRef) ->
-    gen_server:call(herp_refreg:lookup(ClientRef), {list, ""}).
+	gen_server:call(herp_refreg:lookup(ClientRef), {list, ""}).
 %% @doc
 %% list/2 will list all the subcontainers under the container name
 %% which are available to your account.
 %% @spec list(Client::pid(), Container::string()) -> [string()]
 list(ClientRef, Container) ->
-    gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
+	gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
 %% @doc
 %% new/2 will create a new client to the HPCloud service.
 %% @spec new(Body::proplist(), TenantID::string()) -> ref()
 new(Body, TenantID) ->
-    Ref = make_ref(),
-    {ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
-    Ref.
+	Ref = make_ref(),
+	{ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
+	Ref.
