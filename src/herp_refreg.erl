@@ -67,7 +67,7 @@ init([]) ->
 %%          {stop, Reason, Reply, State}   | (terminate/2 is called)
 %%          {stop, Reason, State}            (terminate/2 is called)
 %%--------------------------------------------------------------------
-handle_call({register, {Ref, Pid}}, _From, #state{refs = Refs} = State) ->
+handle_call({register, {Ref, Pid}}, _From, #state{refs = Refs}) ->
     Reply = ok,
     {reply, Reply, #state{refs = dict:store(Ref, Pid, Refs)}};
 
