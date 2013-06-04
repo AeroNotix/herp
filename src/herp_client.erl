@@ -84,7 +84,7 @@ extract_authtoken(LoginResp) ->
 %% @spec new(Body::proplist(), TenantID::string()) -> ref()
 new(Body, TenantID) ->
 	Ref = make_ref(),
-	{ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
+	{ok, _Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
 	Ref.
 
 %% @doc
