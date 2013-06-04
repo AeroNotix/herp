@@ -72,8 +72,13 @@ handle_call({register, {Ref, Pid}}, _From, #state{refs = Refs}) ->
     {reply, Reply, #state{refs = dict:store(Ref, Pid, Refs)}};
 
 handle_call({lookup, Ref}, _From, #state{refs = Refs} = State) ->
-    Reply = dict:fetch(Ref, Refs),
-    {reply, Reply, State};
+    case dict:is_key(Ref, Refs) of
+        true ->
+            Reply = dict:fetch(Ref, Refs),
+            {reply, Reply, State};
+        _Else ->
+            {reply, {error, not_found}, State}
+    end;
 
 handle_call({delete, Ref}, _From, #state{refs = Refs} = State) ->
     Reply = ok,
