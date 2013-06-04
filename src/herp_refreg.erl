@@ -14,7 +14,7 @@
 
 %%--------------------------------------------------------------------
 %% External exports
--export([start_link/0, register/2, lookup/1]).
+-export([start_link/0, register/2, lookup/1, delete/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
@@ -38,6 +38,9 @@ register(Ref, Pid) ->
 
 lookup(Ref) ->
     gen_server:call(?SERVER, {lookup, Ref}).
+
+delete(Ref) ->
+    gen_server:call(?SERVER, {delete, Ref}).
 
 %%====================================================================
 %% Server functions
@@ -70,7 +73,16 @@ handle_call({register, {Ref, Pid}}, _From, #state{refs = Refs} = State) ->
 
 handle_call({lookup, Ref}, _From, #state{refs = Refs} = State) ->
     Reply = dict:fetch(Ref, Refs),
-    {reply, Reply, State}.
+    {reply, Reply, State};
+
+handle_call({delete, Ref}, _From, #state{refs = Refs} = State) ->
+    Reply = ok,
+    case dict:is_key(Ref) of
+        true ->
+            {reply, Reply, dict:erase(Ref, State)};
+        _Else ->
+            {reply, Reply, State}
+    end.
 
 %%--------------------------------------------------------------------
 %% Function: handle_cast/2
