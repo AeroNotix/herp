@@ -11,7 +11,7 @@
 -export([start_link/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
 %% Client API
--export([list/1,list/2,new/2]).
+-export([new/2]).
 
 %% A client record encapsulates the three most important pieces
 %% of information which needs to be stored about a client session.
@@ -77,19 +77,6 @@ extract_authtoken(LoginResp) ->
 	AuthToken = proplists:get_value(<<"id">>, Token),
 	Expires = proplists:get_value(<<"expires">>, Token),
 	#client{access=binary_to_list(AuthToken), expires=Expires}.
-
-%% @doc
-%% list/1 will list all the base containers which are available to
-%% your account.
-%% @spec list(Client::pid()) -> [string()]
-list(ClientRef) ->
-	gen_server:call(herp_refreg:lookup(ClientRef), {list, ""}).
-%% @doc
-%% list/2 will list all the subcontainers under the container name
-%% which are available to your account.
-%% @spec list(Client::pid(), Container::string()) -> [string()]
-list(ClientRef, Container) ->
-	gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
 %% @doc
 %% new/2 will create a new client to the HPCloud service.

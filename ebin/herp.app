@@ -7,4 +7,4 @@
               {mod,{herp_app,[]}},
               {env,[]},
               {modules,[herp_app,herp_client,herp_client_sup,herp_identity,
-                        herp_refreg,herp_refreg_sup,herp_sup]}]}.
+                        herp_object,herp_refreg,herp_refreg_sup,herp_sup]}]}.
