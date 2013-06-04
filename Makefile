@@ -11,3 +11,7 @@ clean:
 
 deps:
 	rebar get-deps
+
+docs:
+	erl -noshell \
+		-eval 'edoc:application($(RELNAME), ".", []), init:stop().'
