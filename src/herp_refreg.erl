@@ -36,7 +36,7 @@ start_link() ->
 %% @doc
 %% register/2 registers a new Reference with a Pid so we can have a
 %% reference to a possibly always changing Pid.
-%% @spec register(Ref::ref(), Pid::pid())
+%% @spec register(Ref::ref(), Pid::pid()) -> ok
 register(Ref, Pid) ->
     gen_server:call(?SERVER, {register, {Ref, Pid}}).
 
