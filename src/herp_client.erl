@@ -1,3 +1,5 @@
+%%% @author Aaron France <aaron.l.france@gmail.com>
+
 -module(herp_client).
 -behaviour(gen_server).
 
