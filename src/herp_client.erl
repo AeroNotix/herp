@@ -19,7 +19,7 @@
 %% @spec init({LoginResp::string(), TokenID::string()}) -> {ok, Pid}
 %% where
 %%   Pid = pid()
-init({Body, TokenID}) ->
+init({Body, TokenID, Ref}) ->
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
                                                                          ["accept", "application/json"],
                                                                          "application/json", Body}, [], []),
@@ -71,17 +71,16 @@ extract_authtoken(LoginResp) ->
 %% list/1 will list all the base containers which are available to
 %% your account.
 %% @spec list(Client::pid()) -> [string()]
-list(Client) ->
-    gen_server:call(Client, {list, ""}).
+list(ClientRef) ->
+    gen_server:call(herp_refreg:lookup(ClientRef), {list, ""}).
 %% @doc
 %% list/2 will list all the subcontainers under the container name
 %% which are available to your account.
 %% @spec list(Client::pid(), Container::string()) -> [string()]
-list(Client, Container) ->
-    gen_server:call(Client, {list, Container}).
+list(ClientRef, Container) ->
+    gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
 new(Body, TenantID) ->
     Ref = make_ref(),
-    {ok, Pid} = herp_client_sup:start_child(Body, TenantID),
-    ok = herp_refreg:register(Ref, Pid),
+    {ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
     Ref.
