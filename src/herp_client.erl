@@ -90,6 +90,9 @@ list(ClientRef) ->
 list(ClientRef, Container) ->
     gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
+%% @doc
+%% new/2 will create a new client to the HPCloud service.
+%% @spec new(Body::proplist(), TenantID::string()) -> ref()
 new(Body, TenantID) ->
     Ref = make_ref(),
     {ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
