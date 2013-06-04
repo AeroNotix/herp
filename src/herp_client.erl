@@ -11,7 +11,7 @@
 -export([start_link/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
 %% Client API
--export([new/2]).
+-export([new/2, quit/1]).
 
 %% A client record encapsulates the three most important pieces
 %% of information which needs to be stored about a client session.
@@ -60,10 +60,11 @@ handle_call({list, Container}, _From, State) ->
 			{reply, {error, Else}, State}
 	end.
 
-%% We don't have any specific needs for these yet but we need to over-
-%% ride them for the gen_server behaviour.
-handle_cast(_Request, State) ->
-	{noreply, State}.
+handle_cast({quit, ClientRef}, State) ->
+	Reason = normal,
+	herp_refreg:delete(ClientRef),
+	{stop, Reason, State}.
+
 handle_info(_Message, Library) ->
 	{noreply, Library}.
 terminate(_Reason, _Library) -> ok.
@@ -85,3 +86,9 @@ new(Body, TenantID) ->
 	Ref = make_ref(),
 	{ok, Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
 	Ref.
+
+%% @doc
+%% quit/1 will end a session
+%% @spec end(ClientRef::ref())
+quit(ClientRef) ->
+	gen_server:cast(herp_refreg:lookup(ClientRef), {quit, ClientRef}).

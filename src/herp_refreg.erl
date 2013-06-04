@@ -77,9 +77,9 @@ handle_call({lookup, Ref}, _From, #state{refs = Refs} = State) ->
 
 handle_call({delete, Ref}, _From, #state{refs = Refs} = State) ->
     Reply = ok,
-    case dict:is_key(Ref) of
+    case dict:is_key(Ref, Refs) of
         true ->
-            {reply, Reply, dict:erase(Ref, State)};
+            {reply, Reply, #state{refs = dict:erase(Ref, Refs)}};
         _Else ->
             {reply, Reply, State}
     end.
