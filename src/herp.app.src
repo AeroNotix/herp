@@ -6,8 +6,8 @@
   {registered, []},
   {applications, [
                   asn1,
-                  appmon,
-                  gs,
+                  observer,
+                  wx,
                   crypto,
                   inets,
                   kernel,
