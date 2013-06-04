@@ -2,12 +2,14 @@
 -behaviour(gen_server).
 
 -define(OBJECT_URL, "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
+-define(REGION_URL, "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
+-define(SERVER, ?MODULE).
 
 %% gen_server behaviour
 -export([start_link/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
 
 %% Client API
--export([list/1,list/2]).
+-export([list/1,list/2,new/2]).
 
 %% A client record encapsulates the three most important pieces
 %% of information which needs to be stored about a client session.
@@ -17,10 +19,19 @@
 %% @spec init({LoginResp::string(), TokenID::string()}) -> {ok, Pid}
 %% where
 %%   Pid = pid()
-init({LoginResp, TokenID}) ->
-	ClientRec = extract_authtoken(LoginResp),
-	ClientRec2 = ClientRec#client{tokenid=TokenID},
-	{ok, ClientRec2}.
+init({Body, TokenID, Ref}) ->
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
+                                                                         ["accept", "application/json"],
+                                                                         "application/json", Body}, [], []),
+    case Status of
+        200 ->
+            LoginResp = jsx:decode(list_to_binary(Resp)),
+            ClientRec = extract_authtoken(LoginResp),
+            ClientRec2 = ClientRec#client{tokenid=TokenID},
+            {ok, ClientRec2};
+        _Else ->
+            {stop, Status}
+    end.
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
@@ -68,3 +79,8 @@ list(Client) ->
 %% @spec list(Client::pid(), Container::string()) -> [string()]
 list(Client, Container) ->
     gen_server:call(Client, {list, Container}).
+
+new(Body, TenantID) ->
+    Ref = make_ref(),
+    {ok, _Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
+    Ref.
