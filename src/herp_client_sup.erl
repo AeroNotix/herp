@@ -63,7 +63,7 @@ init([]) ->
                      transient, 5000, worker, [herp_client]},
     
     Children = [ClientWorkers],
-    RestartStrategy = {simple_one_for_one, 3, 60},
+    RestartStrategy = {simple_one_for_one, 5000, 26400},
     {ok, {RestartStrategy, Children}}.
 
 %%====================================================================
