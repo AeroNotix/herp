@@ -22,9 +22,10 @@
 %% where
 %%   Pid = pid()
 init({Body, TokenID, Ref}) ->
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
-                                                                         ["accept", "application/json"],
-                                                                         "application/json", Body}, [], []),
+	Response = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
+									["accept", "application/json"],
+									"application/json", Body}, [], []),
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
     case Status of
         200 ->
             LoginResp = jsx:decode(list_to_binary(Resp)),
@@ -47,15 +48,16 @@ handle_call({list, Container}, _From, State) ->
 			  _Else ->
 				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
 		  end,
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(get, {URL,
-																		 [{"accept", "application/json"},
-																		  {"X-Auth-Token", State#client.access}]}, [], []),
-    case Status of
-        200 ->
-            {reply, jsx:decode(list_to_binary(Resp)), State};
-        Else ->
-            {reply, {error, Else}, State}
-    end.
+	Response = httpc:request(get, {URL,
+								   [{"accept", "application/json"},
+									{"X-Auth-Token", State#client.access}]}, [], []),
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+	case Status of
+		200 ->
+			{reply, jsx:decode(list_to_binary(Resp)), State};
+		Else ->
+			{reply, {error, Else}, State}
+	end.
 
 %% We don't have any specific needs for these yet but we need to over-
 %% ride them for the gen_server behaviour.
