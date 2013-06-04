@@ -19,7 +19,7 @@
 %% @spec init({LoginResp::string(), TokenID::string()}) -> {ok, Pid}
 %% where
 %%   Pid = pid()
-init({Body, TokenID, Ref}) ->
+init({Body, TokenID}) ->
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = httpc:request(post, {string:concat(?REGION_URL, "tokens"),
                                                                          ["accept", "application/json"],
                                                                          "application/json", Body}, [], []),
@@ -82,5 +82,6 @@ list(Client, Container) ->
 
 new(Body, TenantID) ->
     Ref = make_ref(),
-    {ok, _Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
+    {ok, Pid} = herp_client_sup:start_child(Body, TenantID),
+    ok = herp_refreg:register(Ref, Pid),
     Ref.

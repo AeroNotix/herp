@@ -17,7 +17,7 @@
 %%--------------------------------------------------------------------
 -export([
          start_link/0,
-         start_child/3
+         start_child/2
         ]).
 
 %%--------------------------------------------------------------------
@@ -46,8 +46,8 @@
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
-start_child(Body, TenantID, Ref) ->
-	supervisor:start_child(?SERVER, [{Body, TenantID, Ref}]).
+start_child(Body, TenantID) ->
+	supervisor:start_child(?SERVER, [{Body, TenantID}]).
 
 %%====================================================================
 %% Server functions

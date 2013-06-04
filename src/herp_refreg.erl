@@ -14,7 +14,7 @@
 
 %%--------------------------------------------------------------------
 %% External exports
--export([start_link/0]).
+-export([start_link/0, register/2, lookup/1]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
@@ -32,6 +32,12 @@
 %%--------------------------------------------------------------------
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+register(Ref, Pid) ->
+    gen_server:call(?SERVER, {register, {Ref, Pid}}).
+
+lookup(Ref) ->
+    gen_server:call(?SERVER, {lookup, Ref}).
 
 %%====================================================================
 %% Server functions
@@ -58,9 +64,13 @@ init([]) ->
 %%          {stop, Reason, Reply, State}   | (terminate/2 is called)
 %%          {stop, Reason, State}            (terminate/2 is called)
 %%--------------------------------------------------------------------
-handle_call({register, {Pid, Ref}}, _From, #state{refs = Refs} = State) ->
+handle_call({register, {Ref, Pid}}, _From, #state{refs = Refs} = State) ->
     Reply = ok,
-    {reply, Reply, State#state{refs = dict:store(Ref, Pid, Refs)}}.
+    {reply, Reply, #state{refs = dict:store(Ref, Pid, Refs)}};
+
+handle_call({lookup, Ref}, _From, #state{refs = Refs} = State) ->
+    Reply = dict:fetch(Ref, Refs),
+    {reply, Reply, State}.
 
 %%--------------------------------------------------------------------
 %% Function: handle_cast/2
