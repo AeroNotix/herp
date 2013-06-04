@@ -33,12 +33,22 @@
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
+%% @doc
+%% register/2 registers a new Reference with a Pid so we can have a
+%% reference to a possibly always changing Pid.
+%% @spec register(Ref::ref(), Pid::pid())
 register(Ref, Pid) ->
     gen_server:call(?SERVER, {register, {Ref, Pid}}).
 
+%% @doc
+%% lookup/1 looks up a reference for it's associate Pid.
+%% @spec lookup(Ref::ref()) -> pid() | {error, Reason}
 lookup(Ref) ->
     gen_server:call(?SERVER, {lookup, Ref}).
 
+%% @doc
+%% delete/1 deletes any mapping between the Ref::ref() and the Pid::pid()
+%% @spec delete(Ref::ref()) -> ok
 delete(Ref) ->
     gen_server:call(?SERVER, {delete, Ref}).
 
