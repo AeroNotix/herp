@@ -64,6 +64,10 @@ upload_file(ClientRef, File, Container, Options, Timeout) ->
             {error, Reason}
     end.
 
+%% @doc
+%% hash_file/1 will take a Binary and return the md5sum of that
+%% binary.
+%% @spec hash_file(Contents::binary()) -> string()
 hash_file(Contents) ->
     << M: 128>> = crypto:md5(Contents),
     lists:flatten(io_lib:format("~32.15.0b", [M])).
