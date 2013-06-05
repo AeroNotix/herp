@@ -2,7 +2,7 @@ Herp
 ====
 
 HPCloud OpenStack bindings in Erlang
-------------------------------------
+====================================
 
 Currently you can:
 
@@ -26,6 +26,25 @@ back in and getting a new AuthToken. This happens entirely
 transparently from your perspective. There's a slight race condition
 currently when your reference will be invalid whilst the asynchronous
 re-Auth takes place.
+
+Configuration
+=============
+
+For some features your sys.config or environment should contain:
+
+```erlang
+[
+ {herp, [
+         {has_proxy, boolean() },
+         {proxyaddr, proxy_address::string()},
+         {proxyport, proxy_port::integer()},
+         {username, username::string()},
+         {password, password::string()},
+         {tenant_id, tenant_id::string()}
+        ]
+ }].
+```
+
 
 Listing containers
 ==================
