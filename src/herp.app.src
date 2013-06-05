@@ -6,15 +6,16 @@
   {registered, []},
   {applications, [
                   asn1,
-                  observer,
-                  wx,
                   crypto,
                   inets,
                   kernel,
+                  mimetypes,
+                  observer,
                   public_key,
                   runtime_tools,
                   ssl,
-                  stdlib
+                  stdlib,
+                  wx
                  ]},
   {mod, { herp_app, []}},
   {env, []}
