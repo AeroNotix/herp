@@ -49,13 +49,24 @@ handle_call({list, Container}, _From, State) ->
 			  _Else ->
 				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
 		  end,
-	Request = {URL, [{"accept", "application/json"},
-					 {"X-Auth-Token", State#client.access}]},
+	Request = {URL, base_headers(State)},
 	Response = httpc:request(get, Request, [], []),
 	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
 	case Status of
 		200 ->
 			{reply, jsx:decode(list_to_binary(Resp)), State};
+		Else ->
+			{reply, {error, Else}, State}
+	end;
+
+handle_call({create_directory, Container}, _From, State) when Container =/= "" ->
+	URL = ?OBJECT_URL ++ "/" ++ Container,
+	Request = {URL, base_headers(State)},
+	Response = httpc:request(put, Request, [], []),
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+	case Status of
+		200 ->
+			{reply, ok, State};
 		Else ->
 			{reply, {error, Else}, State}
 	end.
@@ -92,3 +103,7 @@ new(Body, TenantID) ->
 %% @spec end(ClientRef::ref())
 quit(ClientRef) ->
 	gen_server:cast(herp_refreg:lookup(ClientRef), {quit, ClientRef}).
+
+base_headers(#client{access = Access}) ->
+	["accept", "application/json"},
+	{"X-Auth-Token", Access}].
