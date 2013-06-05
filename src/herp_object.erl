@@ -9,6 +9,7 @@
 %% @spec list(Client::pid()) -> [string()]
 list(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {list, ""}).
+
 %% @doc
 %% list/2 will list all the subcontainers under the container name
 %% which are available to your account.
