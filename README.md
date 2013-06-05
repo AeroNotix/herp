@@ -54,7 +54,6 @@ Prerequisites:
 * relx
 
 ```shell
-
 $ git clone https://github.com/AeroNotix/herp.git
 $ cd herp
 $ make
@@ -63,7 +62,6 @@ $ make
 The documentation can be built with:
 
 ```shell
-
 $ make docs
 ```
 
