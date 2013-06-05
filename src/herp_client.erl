@@ -78,12 +78,19 @@ handle_call({create_file, Container, FileContents, Filename, Options}, _From, St
     URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container ++ "/" ++ Filename,
     Request = {URL, base_headers(State) ++ Options, ContentType, FileContents},
     Response = httpc:request(put, Request, [], []),
-    {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
-    case Status of
-        201 ->
-            {reply, ok, State};
+    {ok, {{_HTTP, Status, _Msg}, Headers, _Resp}} = Response,
+    MD5 = proplists:get_value("ETag", Options),
+    MD5Remote = proplists:get_value("ETag", Headers),
+    case MD5 =:= MD5Remote of
+        true ->
+            case Status of
+                201 ->
+                    {reply, ok, State};
+                _Else ->
+                    {reply, {error, Status}, State}
+            end;
         _Else ->
-            {reply, {error, Status}, State}
+            {replay, {error, hash_mismatch}, State}
     end.
 
 handle_cast({quit, ClientRef}, State) ->

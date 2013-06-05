@@ -67,8 +67,14 @@ Uploading Files
 
 ```erlang
 
-ok = herp_object:upload_file(Client, "/path/to/file", "container_name")
+ok = herp_object:upload_file(Client, "/path/to/file", "container_name"),
+
+%% Set extra headers.
+ok = herp_object:upload_file(Client, "/path/to/file2", "container_name", [{"header", "option"}]),
+
+%% Specify your timeout.
+ok = herp_object:upload_file(Client, "/path/to/file2", "container_name", [{"header", "option"}], 5000),
 ```
 
-Currently only plain-text files are supported and we do not currently
-check for end-to-end integrity though this is planned.
+Files are md5'd in order to check for end-to-end integrity, they are
+also checked for their Content-type when being uploaded.

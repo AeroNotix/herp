@@ -53,10 +53,17 @@ upload_file(ClientRef, File, Container, Options, Timeout) ->
     case file:read_file(File) of
         {ok, FileContents} ->
             Filename = filename:basename(File),
-            Headers = [{"Content-Length", byte_size(FileContents)},
-                       {"Content-Type", binary_to_list(hd(mimetypes:filename(File)))}] ++ Options,
+            Headers = [
+                       {"Content-Length", byte_size(FileContents)},
+                       {"Content-Type", binary_to_list(hd(mimetypes:filename(File)))},
+                       {"ETag", hash_file(FileContents)}
+                      ] ++ Options,
             gen_server:call(herp_refreg:lookup(ClientRef),
                             {create_file, Container, FileContents, Filename, Headers}, Timeout);
         {error, Reason} ->
             {error, Reason}
     end.
+
+hash_file(Contents) ->
+    << M: 128>> = crypto:md5(Contents),
+    lists:flatten(io_lib:format("~32.15.0b", [M])).
