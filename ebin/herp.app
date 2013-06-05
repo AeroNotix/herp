@@ -6,5 +6,6 @@
                              public_key,runtime_tools,ssl,stdlib,wx]},
               {mod,{herp_app,[]}},
               {env,[]},
-              {modules,[herp_app,herp_client,herp_client_sup,herp_identity,
-                        herp_object,herp_refreg,herp_refreg_sup,herp_sup]}]}.
+              {modules,[herp_app,herp_client,herp_client_sup,herp_compute,
+                        herp_identity,herp_object,herp_refreg,herp_refreg_sup,
+                        herp_sup]}]}.

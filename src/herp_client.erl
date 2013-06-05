@@ -3,8 +3,9 @@
 -module(herp_client).
 -behaviour(gen_server).
 
--define(OBJECT_URL, "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
--define(REGION_URL, "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
+-define(OBJECT_URL,  "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
+-define(REGION_URL,  "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
+-define(COMPUTE_URL, "https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/").
 -define(SERVER, ?MODULE).
 
 %% gen_server behaviour
@@ -90,7 +91,19 @@ handle_call({create_file, Container, FileContents, Filename, Options}, _From, St
                     {reply, {error, Status}, State}
             end;
         _Else ->
-            {replay, {error, hash_mismatch}, State}
+            {reply, {error, hash_mismatch}, State}
+    end;
+
+handle_call({create_server, Body}, _From, State) ->
+    URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/servers/",
+    Request = {URL, base_headers(State), "applicaation/json", Body},
+    Response = httpc:request(post, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
+    case Status of
+        202 ->
+            {reply, ok, State};
+        _Else ->
+            {reply, {error, Status}, State}
     end.
 
 handle_cast({quit, ClientRef}, State) ->
