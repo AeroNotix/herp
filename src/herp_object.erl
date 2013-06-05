@@ -17,4 +17,4 @@ list(ClientRef, Container) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
 create_directory(ClientRef, Container) ->
-	gen_server:call(herp_refreg:lookup(ClientRef, {create_directory, Container})).
+	gen_server:call(herp_refreg:lookup(ClientRef), {create_directory, Container}).

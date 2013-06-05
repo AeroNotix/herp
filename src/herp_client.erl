@@ -60,12 +60,14 @@ handle_call({list, Container}, _From, State) ->
     end;
 
 handle_call({create_directory, Container}, _From, State) when Container =/= "" ->
-    URL = ?OBJECT_URL ++ "/" ++ Container,
-    Request = {URL, base_headers(State)},
+    URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container,
+    Request = {URL, base_headers(State), "application/directory", <<"">>},
     Response = httpc:request(put, Request, [], []),
     {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
     case Status of
-        200 ->
+        201 ->
+            {reply, ok, State};
+        202 ->
             {reply, ok, State};
         Else ->
             {reply, {error, Else}, State}
