@@ -115,7 +115,7 @@ new(Body, TenantID) ->
 
 %% @doc
 %% quit/1 will end a session
-%% @spec end(ClientRef::ref())
+%% @spec quit(ClientRef::ref()) -> ok
 quit(ClientRef) ->
     gen_server:cast(herp_refreg:lookup(ClientRef), {quit, ClientRef}).
 

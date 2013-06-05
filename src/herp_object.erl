@@ -26,7 +26,7 @@ create_directory(ClientRef, Container) ->
 %% @doc
 %% create_directory/3 will create a new directory in the Object Store
 %% along with all the Optional Metadata you require on your object.
-%% @spec create_directory(ClientRef::pid(), Container::string(), Options::[{string(), string()}}) -> ok | {error, Reason}
+%% @spec create_directory(ClientRef::pid(), Container::string(), Options::[{string(), string()}]) -> ok | {error, Reason}
 create_directory(ClientRef, Container, Options) ->
     gen_server:call(herp_refreg:lookup(ClientRef), {create_directory, Container, Options}).
 
