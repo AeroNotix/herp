@@ -8,6 +8,8 @@ Currently you can:
 
 * Login
 * List Containers
+* Create Containers
+* Upload Files
 
 By providing a sys.config file you can login via
 `herp_identity:login_conf`, otherwise you can provide them directly.
@@ -20,10 +22,53 @@ By providing a sys.config file you can login via
 
 Once you have a client, it will be managed by the `herp_sup`
 supervisor, restarting your client if you cause it to crash, logging
-back in and getting a new AuthToken.
+back in and getting a new AuthToken. This happens entirely
+transparently from your perspective. There's a slight race condition
+currently when your reference will be invalid whilst the asynchronous
+re-Auth takes place.
+
+Listing containers
+==================
 
 ```erlang
 
-ContainersTop = herp_client:list(Client).
-ContainersDetail = herp_client:list(Client, "container").
+ContainersTop = herp_object:list(Client).
+ContainersDetail = herp_object:list(Client, "container").
 ```
+
+This returns a proplist as such:
+
+```erlang
+
+[[{<<"count">>,13},
+  {<<"bytes">>,4904536},
+  {<<"name">>,<<"ContainerName">>}],
+ [{<<"count">>,0},
+  {<<"bytes">>,0},
+  {<<"name">>,<<"OtherContainerName">>}],
+ [{<<"count">>,11},
+  {<<"bytes">>,384012},
+  {<<"name">>,<<"Awseum">>}]]
+```
+
+Creating Containers
+===================
+
+```erlang
+
+ok = herp_object:create_directory(Client, "NewDirectory"),
+
+%% You can also set custom headers on the request.
+ok = herp_object:create_directory(Client, "NewDirectory", [{"Header", "Option"}]).
+```
+
+Uploading Files
+===============
+
+```erlang
+
+ok = herp_object:upload_file(Client, "/path/to/file", "container_name")
+```
+
+Currently only plain-text files are supported and we do not currently
+check for end-to-end integrity though this is planned.
