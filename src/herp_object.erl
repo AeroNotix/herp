@@ -16,5 +16,9 @@ list(ClientRef) ->
 list(ClientRef, Container) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {list, Container}).
 
+%% @doc
+%% create_directory/2 will create a new directory in the Object Store
+%% you can create any level directory you need.
+%% @spec create_directory(ClientRef::pid(), Container::string()) -> ok | {error, Reason}
 create_directory(ClientRef, Container) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {create_directory, Container}).
