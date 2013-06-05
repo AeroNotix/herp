@@ -45,6 +45,29 @@ For some features your sys.config or environment should contain:
  }].
 ```
 
+Building
+========
+
+Prerequisites:
+
+* rebar
+* relx
+
+```shell
+
+$ git clone https://github.com/AeroNotix/herp.git
+$ cd herp
+$ make
+```
+
+The documentation can be built with:
+
+```shell
+
+$ make docs
+```
+
+This will create the `docs/` folder in your current directory.
 
 Listing containers
 ==================
