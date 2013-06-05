@@ -22,88 +22,88 @@
 %% where
 %%   Pid = pid()
 init({Body, TokenID, Ref}) ->
-	Request = {string:concat(?REGION_URL, "tokens"),
-			   ["accept", "application/json"],
-			   "application/json", Body},
-	Response = httpc:request(post, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-	case Status of
-		200 ->
-			LoginResp = jsx:decode(list_to_binary(Resp)),
-			ClientRec = extract_authtoken(LoginResp),
-			ClientRec2 = ClientRec#client{tokenid=TokenID},
-			ok = herp_refreg:register(Ref, self()),
-			{ok, ClientRec2};
-		_Else ->
-			{stop, Status}
-	end.
+    Request = {string:concat(?REGION_URL, "tokens"),
+               ["accept", "application/json"],
+               "application/json", Body},
+    Response = httpc:request(post, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    case Status of
+        200 ->
+            LoginResp = jsx:decode(list_to_binary(Resp)),
+            ClientRec = extract_authtoken(LoginResp),
+            ClientRec2 = ClientRec#client{tokenid=TokenID},
+            ok = herp_refreg:register(Ref, self()),
+            {ok, ClientRec2};
+        _Else ->
+            {stop, Status}
+    end.
 
 code_change(_OldVsn, State, _Extra) ->
-	{ok, State}.
+    {ok, State}.
 
 %% @doc Lists the containers on the objectstore/CDN service.
 handle_call({list, Container}, _From, State) ->
-	URL = case Container of
-			  "" ->
-				  string:concat(?OBJECT_URL, State#client.tokenid);
-			  _Else ->
-				  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
-		  end,
-	Request = {URL, base_headers(State)},
-	Response = httpc:request(get, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-	case Status of
-		200 ->
-			{reply, jsx:decode(list_to_binary(Resp)), State};
-		Else ->
-			{reply, {error, Else}, State}
-	end;
+    URL = case Container of
+              "" ->
+                  string:concat(?OBJECT_URL, State#client.tokenid);
+              _Else ->
+                  ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
+          end,
+    Request = {URL, base_headers(State)},
+    Response = httpc:request(get, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    case Status of
+        200 ->
+            {reply, jsx:decode(list_to_binary(Resp)), State};
+        Else ->
+            {reply, {error, Else}, State}
+    end;
 
 handle_call({create_directory, Container}, _From, State) when Container =/= "" ->
-	URL = ?OBJECT_URL ++ "/" ++ Container,
-	Request = {URL, base_headers(State)},
-	Response = httpc:request(put, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-	case Status of
-		200 ->
-			{reply, ok, State};
-		Else ->
-			{reply, {error, Else}, State}
-	end.
+    URL = ?OBJECT_URL ++ "/" ++ Container,
+    Request = {URL, base_headers(State)},
+    Response = httpc:request(put, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    case Status of
+        200 ->
+            {reply, ok, State};
+        Else ->
+            {reply, {error, Else}, State}
+    end.
 
 handle_cast({quit, ClientRef}, State) ->
-	Reason = normal,
-	herp_refreg:delete(ClientRef),
-	{stop, Reason, State}.
+    Reason = normal,
+    herp_refreg:delete(ClientRef),
+    {stop, Reason, State}.
 
 handle_info(_Message, Library) ->
-	{noreply, Library}.
+    {noreply, Library}.
 terminate(_Reason, _Library) -> ok.
 
 start_link(State) ->
-	gen_server:start_link(?MODULE, State, []).
+    gen_server:start_link(?MODULE, State, []).
 
 extract_authtoken(LoginResp) ->
-	Access = proplists:get_value(<<"access">>, LoginResp),
-	Token = proplists:get_value(<<"token">>, Access),
-	AuthToken = proplists:get_value(<<"id">>, Token),
-	Expires = proplists:get_value(<<"expires">>, Token),
-	#client{access=binary_to_list(AuthToken), expires=Expires}.
+    Access = proplists:get_value(<<"access">>, LoginResp),
+    Token = proplists:get_value(<<"token">>, Access),
+    AuthToken = proplists:get_value(<<"id">>, Token),
+    Expires = proplists:get_value(<<"expires">>, Token),
+    #client{access=binary_to_list(AuthToken), expires=Expires}.
 
 %% @doc
 %% new/2 will create a new client to the HPCloud service.
 %% @spec new(Body::proplist(), TenantID::string()) -> ref()
 new(Body, TenantID) ->
-	Ref = make_ref(),
-	{ok, _Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
-	Ref.
+    Ref = make_ref(),
+    {ok, _Pid} = herp_client_sup:start_child(Body, TenantID, Ref),
+    Ref.
 
 %% @doc
 %% quit/1 will end a session
 %% @spec end(ClientRef::ref())
 quit(ClientRef) ->
-	gen_server:cast(herp_refreg:lookup(ClientRef), {quit, ClientRef}).
+    gen_server:cast(herp_refreg:lookup(ClientRef), {quit, ClientRef}).
 
 base_headers(#client{access = Access}) ->
-	["accept", "application/json"},
-	{"X-Auth-Token", Access}].
+    [{"accept", "application/json"},
+     {"X-Auth-Token", Access}].
