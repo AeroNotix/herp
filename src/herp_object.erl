@@ -37,7 +37,8 @@ upload_file(ClientRef, File, Container) ->
     case file:read_file(File) of
         {ok, FileContents} ->
             Filename = filename:basename(File),
-            Headers = [{"Content-Length", byte_size(FileContents)}],
+            Headers = [{"Content-Length", byte_size(FileContents)},
+                       {"Content-Type", binary_to_list(hd(mimetypes:filename(File)))}] ++ Options,
             gen_server:call(herp_refreg:lookup(ClientRef),
                             {create_file, Container, FileContents, Filename, Headers});
         {error, Reason} ->

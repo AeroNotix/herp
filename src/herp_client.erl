@@ -73,9 +73,10 @@ handle_call({create_directory, Container, Options}, _From, State) when Container
             {reply, {error, Else}, State}
     end;
 
-handle_call({create_file, Container, FileContents, Filename, Options}, _From, State) when FileContents =/= <<"">> ->
+handle_call({create_file, Container, FileContents, Filename, Options}, _From, State) ->
+    ContentType = proplists:get_value("Content-Type", Options),
     URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container ++ "/" ++ Filename,
-    Request = {URL, base_headers(State) ++ Options, "text/plain", FileContents},
+    Request = {URL, base_headers(State) ++ Options, ContentType, FileContents},
     Response = httpc:request(put, Request, [], []),
     {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
     case Status of
