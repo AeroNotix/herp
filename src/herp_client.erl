@@ -71,6 +71,18 @@ handle_call({create_directory, Container, Options}, _From, State) when Container
             {reply, ok, State};
         Else ->
             {reply, {error, Else}, State}
+    end;
+
+handle_call({create_file, Container, FileContents, Filename, Options}, _From, State) when FileContents =/= <<"">> ->
+    URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container ++ "/" ++ Filename,
+    Request = {URL, base_headers(State) ++ Options, "text/plain", FileContents},
+    Response = httpc:request(put, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    case Status of
+        201 ->
+            {reply, ok, State};
+        _Else ->
+            {reply, {error, Status}, State}
     end.
 
 handle_cast({quit, ClientRef}, State) ->
