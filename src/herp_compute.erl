@@ -75,11 +75,15 @@ error(Status, Body) ->
             exit(self(), normal)
     end.
 
+%% @doc
+%% Extracts the message field from a Compute API error message.
 extract_error_field(Field, Body) ->
     JSONBody = jsx:decode(list_to_binary(Body)),
     BadRequest = proplists:get_value(Field, JSONBody),
     {error, proplists:get_value(<<"message">>, BadRequest)}.
 
+%% @doc
+%% Helper method to simplify calling list_* endpoints.
 list_endpoint(ClientRef, Which) ->
     gen_server:call(herp_refreg:lookup(ClientRef), Which).
 
