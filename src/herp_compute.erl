@@ -1,6 +1,6 @@
 -module(herp_compute).
 
--export([create_server/2, list_flavours/1, error/2]).
+-export([create_server/2, list_flavours/1, list_images/1, error/2]).
 
 %% @doc
 %% create_server/2 will provision a new server instance in the HPCloud.
@@ -21,6 +21,12 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
         {error, Field} ->
             {error, {Field, missing}}
     end.
+
+list_flavours(ClientRef) ->
+    list_endpoint(ClientRef, list_flavours).
+
+list_images(ClientRef) ->
+    list_endpoint(ClientRef, list_images).
 
 verify_compute_request([]) ->
     ok;
@@ -44,3 +50,6 @@ extract_error_field(Field, Body) ->
     JSONBody = jsx:decode(list_to_binary(Body)),
     BadRequest = proplists:get_value(Field, JSONBody),
     {error, proplists:get_value(<<"message">>, BadRequest)};
+
+list_endpoint(ClientRef, Which) ->
+    gen_server:call(herp_refreg:lookup(ClientRef), Which).

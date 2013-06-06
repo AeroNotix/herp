@@ -103,8 +103,17 @@ handle_call({create_server, Body}, _From, State) ->
         202 ->
             {reply, ok, State};
         _Else ->
-            {reply, {error, Status}, State}
-    end.
+            Reply = herp_compute:error(Status, Resp),
+            {reply, Reply, State}
+    end;
+
+handle_call(list_flavours, _From, State) ->
+    URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/flavors",
+    list_endpoint(URL, State);
+
+handle_call(list_images, _From, State) ->
+    URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/images",
+    list_endpoint(URL, State).
 
 handle_cast({quit, ClientRef}, State) ->
     Reason = normal,
@@ -142,3 +151,17 @@ quit(ClientRef) ->
 base_headers(#client{access = Access}) ->
     [{"accept", "application/json"},
      {"X-Auth-Token", Access}].
+
+list_endpoint(URL, State) ->
+    Request = {URL, base_headers(State)},
+    Response = httpc:request(get, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    JSONResp = list_to_binary(Resp),
+    case Status of
+        200 ->
+            {reply, jsx:decode(JSONResp), State};
+        203 ->
+            {reply, jsx:decode(JSONResp), State};
+        _Else ->
+            {reply, {error, Status}, State}
+    end.
