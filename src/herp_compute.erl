@@ -41,9 +41,9 @@ verify_compute_request([H|T]) ->
 error(Status, Body) ->
     case Status of
         400 ->
-            extract_error_field(<<"badRequest">> Body)
+            extract_error_field(<<"badRequest">>, Body);
         _Else ->
-            exit(self(), "Unhandled api error")
+            exit(self(), normal)
     end.
 
 extract_error_field(Field, Body) ->
