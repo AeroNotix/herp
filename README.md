@@ -146,3 +146,20 @@ Here's what happens when you login to the HPCloud:
 
 This ensures that at no point you end up without either a meandering
 gen_server and you won't end up without any useful error messages.
+
+Imagine a scenario when your client crashes, a timeout occurs or
+you're passed something which you cannot process. It would be
+unfortunate for the Pid you received to become invalid.
+
+To get around this herp_refreg is used as a mapping between unique
+references and the Pids themselves. A herp_client gen_server is free
+to crash and you will never end up with an invalid reference.
+
+Here's a visual representation of the system:
+
+![safe_system](https://raw.github.com/AeroNotix/herp/master/priv/supervision_tree.png)
+
+When a crash occurs and the herp_client is no longer able to continue,
+it exits and the system will re-login to the HPCloud:
+
+![restart_system](https://raw.github.com/AeroNotix/herp/master/priv/supervision_tree_restart_pid.png)
