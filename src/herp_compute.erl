@@ -1,6 +1,6 @@
 -module(herp_compute).
 
--export([create_server/2]).
+-export([create_server/2, list_flavours/1, error/2]).
 
 %% @doc
 %% create_server/2 will provision a new server instance in the HPCloud.
@@ -30,4 +30,14 @@ verify_compute_request([H|T]) ->
             {error, H};
         _Else ->
             verify_compute_request(T)
+    end.
+
+error(Status, Body) ->
+    case Status of
+        400 ->
+            JSONBody = jsx:decode(list_to_binary(Body)),
+            BadRequest = proplists:get_value(<<"badRequest">>, JSONBody),
+            {error, proplists:get_value(<<"message">>, BadRequest)};
+        _Else ->
+            exit(self(), "Unhandled api error")
     end.
