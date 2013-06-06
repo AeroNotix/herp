@@ -22,6 +22,9 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
             {error, {Field, missing}}
     end.
 
+delete_server(ClientRef, ServerID) ->
+    gen_server:call(herp_refreg:lookup(ClientRef), {delete_server, ServerID}).
+
 %% @doc
 %% list_flavours/1 returns a proplist with all the available flavours
 %% in the HPCloud. You shouldn't really need to use this as the list
