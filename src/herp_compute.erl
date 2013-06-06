@@ -35,9 +35,12 @@ verify_compute_request([H|T]) ->
 error(Status, Body) ->
     case Status of
         400 ->
-            JSONBody = jsx:decode(list_to_binary(Body)),
-            BadRequest = proplists:get_value(<<"badRequest">>, JSONBody),
-            {error, proplists:get_value(<<"message">>, BadRequest)};
+            extract_error_field(<<"badRequest">> Body)
         _Else ->
             exit(self(), "Unhandled api error")
     end.
+
+extract_error_field(Field, Body) ->
+    JSONBody = jsx:decode(list_to_binary(Body)),
+    BadRequest = proplists:get_value(Field, JSONBody),
+    {error, proplists:get_value(<<"message">>, BadRequest)};
