@@ -118,3 +118,13 @@ ok = herp_object:upload_file(Client, "/path/to/file2", "container_name", [{"head
 
 Files are md5'd in order to check for end-to-end integrity, they are
 also checked for their Content-type when being uploaded.
+
+Provision New Servers
+=====================
+
+```erlang
+
+ok = herp_compute:create_server(Client, [{<<"name">>, <<"awesomium">>},
+                                          {<<"flavorRef">>, herp_compute:flavour(xsmall)},
+                                          {<<"imageRef">>, <<"1359">>}]).
+```

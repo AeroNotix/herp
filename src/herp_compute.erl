@@ -1,6 +1,6 @@
 -module(herp_compute).
 
--export([create_server/2, list_flavours/1, list_images/1, error/2]).
+-export([create_server/2, list_flavours/1, list_images/1, error/2, flavour/1]).
 
 %% @doc
 %% create_server/2 will provision a new server instance in the HPCloud.
@@ -79,3 +79,19 @@ extract_error_field(Field, Body) ->
 
 list_endpoint(ClientRef, Which) ->
     gen_server:call(herp_refreg:lookup(ClientRef), Which).
+
+%% @doc
+%% flavour/1 will return the appropriate term for the flavorRef.
+%% @spec flavour(atom()) -> binary()
+flavour(xsmall) ->
+    <<"100">>;
+flavour(small) ->
+    <<"101">>;
+flavour(medium) ->
+    <<"102">>;
+flavour(large) ->
+    <<"103">>;
+flavour(xlarge) ->
+    <<"104">>;
+flavour(largex2) ->
+    <<"105">>.
