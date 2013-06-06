@@ -49,7 +49,7 @@ error(Status, Body) ->
 extract_error_field(Field, Body) ->
     JSONBody = jsx:decode(list_to_binary(Body)),
     BadRequest = proplists:get_value(Field, JSONBody),
-    {error, proplists:get_value(<<"message">>, BadRequest)};
+    {error, proplists:get_value(<<"message">>, BadRequest)}.
 
 list_endpoint(ClientRef, Which) ->
     gen_server:call(herp_refreg:lookup(ClientRef), Which).
