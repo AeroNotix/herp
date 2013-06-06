@@ -17,7 +17,7 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
         ok ->
             S = [{<<"server">>, ServerProp}],
             ServerEncoded = jsx:encode(S),
-            gen_server:call(herp_refreg:lookup(ClientRef), {create_server, ServerEncoded});
+            gen_server:call(herp_refreg:lookup(ClientRef), {create_server, ServerEncoded}, 30000);
         {error, Field} ->
             {error, {Field, missing}}
     end.
