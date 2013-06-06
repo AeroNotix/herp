@@ -3,8 +3,7 @@
 -export([create_server/2]).
 
 %% @doc
-
-%% create/2 will provision a new server instance in the HPCloud.
+%% create_server/2 will provision a new server instance in the HPCloud.
 %% @note you <em>must</em> provide:
 %%    [{<<"flavorRef">>, ?FLAVOR_REF},
 %%     {<<"imageRef">>, ?IMAGE_REF},
