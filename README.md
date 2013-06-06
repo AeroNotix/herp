@@ -128,3 +128,21 @@ ok = herp_compute:create_server(Client, [{<<"name">>, <<"awesomium">>},
                                           {<<"flavorRef">>, herp_compute:flavour(xsmall)},
                                           {<<"imageRef">>, <<"1359">>}]).
 ```
+
+Implementation
+==============
+
+Herp uses Erlang's amazing Supervision capabilities to provide a
+highly-available client.
+
+Here's what happens when you login to the HPCloud:
+
+* Spawn a gen_server specifically for your session.
+* This session is then registered with the herp_client_sup, watching
+  for failures.
+* Login asynchronously to the HPCloud.
+* Register the Pid of this gen_server with the herp_refreg module.
+* Return a unique refererence.
+
+This ensures that at no point you end up without either a meandering
+gen_server and you won't end up without any useful error messages.
