@@ -95,10 +95,10 @@ handle_call({create_file, Container, FileContents, Filename, Options}, _From, St
     end;
 
 handle_call({create_server, Body}, _From, State) ->
-    URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/servers/",
-    Request = {URL, base_headers(State), "applicaation/json", Body},
+    URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/servers",
+    Request = {URL, base_headers(State), "application/json", Body},
     Response = httpc:request(post, Request, [], []),
-    {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
     case Status of
         202 ->
             {reply, ok, State};
