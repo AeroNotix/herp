@@ -22,12 +22,25 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
             {error, {Field, missing}}
     end.
 
+%% @doc
+%% list_flavours/1 returns a proplist with all the available flavours
+%% in the HPCloud. You shouldn't really need to use this as the list
+%% never really changes and we provide flavour/1 which holds all you
+%% need.
 list_flavours(ClientRef) ->
     list_endpoint(ClientRef, list_flavours).
 
+%% @doc
+%% list_images/1 returns a proplist with all the available images in
+%% the HPCloud. The images are fully listed and can be used to
+%% provision new servers.
 list_images(ClientRef) ->
     list_endpoint(ClientRef, list_images).
 
+%% @doc
+%% verify_compute_request/1 will take a list of values and if any are
+%% undefined return an error. We can use this to simplify checking
+%% input proplists to functions like create_server/2
 verify_compute_request([]) ->
     ok;
 verify_compute_request([H|T]) ->
@@ -38,6 +51,19 @@ verify_compute_request([H|T]) ->
             verify_compute_request(T)
     end.
 
+%% @doc
+%% The compute API has a very clear outline for the different kinds of
+%% errors which it handles. They are all in the form:
+%%
+%% {
+%%      $REASON: {
+%%          "message": $MESSAGE,
+%%          "code"   : $CODE,
+%%          "detail" : $DETAIL
+%%      }
+%% }
+%%
+%% @spec error(Status::ref(), Body::proplist()) -> Exit | {error, Reason}
 error(Status, Body) ->
     case Status of
         400 ->
