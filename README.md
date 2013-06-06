@@ -10,6 +10,10 @@ Currently you can:
 * List Containers
 * Create Containers
 * Upload Files
+* Provision servers
+* Delete servers
+* List Images you have
+* List Flavours available
 
 By providing a sys.config file you can login via
 `herp_identity:login_conf`, otherwise you can provide them directly.
