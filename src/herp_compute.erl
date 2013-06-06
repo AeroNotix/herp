@@ -2,6 +2,14 @@
 
 -export([create_server/2]).
 
+%% @doc
+
+%% create/2 will provision a new server instance in the HPCloud.
+%% @note you <em>must</em> provide:
+%%    [{<<"flavorRef">>, ?FLAVOR_REF},
+%%     {<<"imageRef">>, ?IMAGE_REF},
+%%     {<<"name">>, string()}]
+%% @spec create_server(ClientRef::ref(), ServerProp::proplist()) -> ok | {error, {Field::atom(), Reason}}
 create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
     Name = proplists:get_value(<<"name">>, ServerProp),
     Flavor = proplists:get_value(<<"flavorRef">>, ServerProp),
