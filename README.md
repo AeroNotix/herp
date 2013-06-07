@@ -2,7 +2,7 @@ Herp
 ====
 
 HPCloud OpenStack bindings in Erlang
- ====================================
+====================================
 
 Currently you can:
 
@@ -167,3 +167,8 @@ When a crash occurs and the herp_client is no longer able to continue,
 it exits and the system will re-login to the HPCloud:
 
 ![restart_system](https://raw.github.com/AeroNotix/herp/master/priv/supervision_tree_restart_pid.png)
+
+As you can see this provides a high-availability client whilst
+maintaining a clean API. There is no tracking of AuthTokens,
+or client connections or anything like that. You just log in
+and work with the API prodvided.
