@@ -1,10 +1,3 @@
-%%%-------------------------------------------------------------------
-%%% File    : herp_client_sup.erl
-%%% Author  :  <xeno@localhost>
-%%% Description : 
-%%%
-%%% Created :  4 Jun 2013 by  <xeno@localhost>
-%%%-------------------------------------------------------------------
 -module(herp_client_sup).
 
 -behaviour(supervisor).
@@ -32,10 +25,6 @@
 %%--------------------------------------------------------------------
 -define(SERVER, ?MODULE).
 
-%%--------------------------------------------------------------------
-%% Records
-%%--------------------------------------------------------------------
-
 %%====================================================================
 %% External functions
 %%====================================================================
@@ -54,9 +43,12 @@ start_child(Body, TenantID, Ref) ->
 %%====================================================================
 %%--------------------------------------------------------------------
 %% Func: init/1
-%% Returns: {ok,  {SupFlags,  [ChildSpec]}} |
-%%          ignore                          |
-%%          {error, Reason}   
+%%
+%% herp_client_sup is a simple_one_for_one supervisor.
+%%
+%% The client which it is supervising is the real meat and potatoes of
+%% application. It's the herp_client process. We have a 5k/d max
+%% restart allowance.
 %%--------------------------------------------------------------------
 init([]) ->
     ClientWorkers = {herp_client, {herp_client, start_link, []},
@@ -65,7 +57,3 @@ init([]) ->
     Children = [ClientWorkers],
     RestartStrategy = {simple_one_for_one, 5000, 26400},
     {ok, {RestartStrategy, Children}}.
-
-%%====================================================================
-%% Internal functions
-%%====================================================================
