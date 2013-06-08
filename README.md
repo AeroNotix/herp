@@ -27,9 +27,14 @@ By providing a sys.config file you can login via
 Once you have a client, it will be managed by the `herp_sup`
 supervisor, restarting your client if you cause it to crash, logging
 back in and getting a new AuthToken. This happens entirely
-transparently from your perspective. There's a slight race condition
-currently when your reference will be invalid whilst the asynchronous
-re-Auth takes place.
+transparently from your perspective.
+
+Since the re-Auth will take place asynchronously there is a
+possibility that whilst your token is being revalidated that your
+reference will be invalid. This is a minor race condition and is
+entirely temporary. Perhaps I will make it block whilst the new token
+is being fetched and unblock the callers when it has revalidated. That
+is for future versions, though.
 
 Configuration
 =============
