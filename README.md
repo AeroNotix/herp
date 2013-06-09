@@ -2,7 +2,7 @@ Herp
 ====
 
 HPCloud OpenStack bindings in Erlang
-====================================
+ ====================================
 
 Currently you can:
 
