@@ -188,7 +188,6 @@ base_headers(#client{access = Access}) ->
      {"X-Auth-Token", Access}].
 
 %% @doc
-
 %% list_endpoint/2 is a helper method to be used in all "listing"
 %% endpoints. I.e. those which are just GET'ting an endpoint and
 %% succeed on 200 and 203.
