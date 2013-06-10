@@ -37,7 +37,8 @@
 -module(herp_object).
 
 %% Public API
--export([list/1, list/2, create_directory/2, create_directory/3, upload_file/3, upload_file/4, upload_file/5]).
+-export([list/1, list/2, create_directory/2, create_directory/3,
+         upload_file/3, upload_file/4, upload_file/5]).
 
 %% @doc
 %% list/1 will list all the base containers which are available to
@@ -68,7 +69,6 @@ create_directory(ClientRef, Container, Options) ->
     gen_server:call(herp_refreg:lookup(ClientRef), {create_directory, Container, Options}).
 
 %% @doc
-
 %% upload_file/2 will upload a file into the Object Store into the
 %% container you specify.
 upload_file(ClientRef, File, Container) ->
