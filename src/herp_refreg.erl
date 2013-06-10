@@ -92,6 +92,15 @@ lookup(Ref) ->
             lookup(Ref, ?MAX_PID_DEATH_TIMEOUTS)
     end.
 
+%% @doc
+%% lookup/2 is the fallback for when a valid Ref to Pid mapping cannot
+%% be established. We loop whilst not is_process_alive waiting until
+%% our max timeouts has occured, if it does, we assume that the
+%% reference has become permanently invalid.
+%% @spec lookup(_Ref::ref(), 0) -> {error, invalid_ref}
+lookup(_Ref, 0) ->
+    {error, invalid_ref};
+%% @spec lookup(Ref::ref(), N) -> Pid::pid()
 lookup(Ref, N) ->
     Pid = gen_server:call(?SERVER, {lookup, Ref}),
     case is_process_alive(Pid) of
