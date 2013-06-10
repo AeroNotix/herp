@@ -152,6 +152,13 @@ base_headers(#client{access = Access}) ->
     [{"accept", "application/json"},
      {"X-Auth-Token", Access}].
 
+%% @doc
+
+%% list_endpoint/2 is a helper method to be used in all "listing"
+%% endpoints. I.e. those which are just GET'ting an endpoint and
+%% succeed on 200 and 203.
+%%
+%% @spec list_endpoint(URL::string(), State::state()) -> proplist()
 list_endpoint(URL, State) ->
     Request = {URL, base_headers(State)},
     Response = httpc:request(get, Request, [], []),
