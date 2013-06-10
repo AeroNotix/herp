@@ -74,6 +74,8 @@ init({Body, TokenID, Ref}) ->
             {stop, Status}
     end.
 
+%% Currently we don't use this for anything special but we still need
+%% to override it for gen_server behaviour.
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 

@@ -50,6 +50,8 @@
 
 -record(state, {refs}).
 
+%% A simple way to be able to redefine the name of the refreg module
+%% handle.
 -define(SERVER, ?MODULE).
 
 %% When a Pid is retrieved we check if it's an alive Pid, if not we
