@@ -1,0 +1,10 @@
+@author Aaron France <aaron.l.france@gmail.com>
+@copyright 2013 Aaron France
+@version 0.0.1
+@title herp
+
+@doc
+Herp provides a highly-available client for the HPCloud OpenStack API.
+
+It is highly-available since Herp takes great advantage of the
+fault-tolerant supervision trees native to Erlang.
