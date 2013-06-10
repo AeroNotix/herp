@@ -93,7 +93,7 @@ start_child(Body, TenantID, Ref) ->
 %% --------------------------------------------------------------------
 init([]) ->
     ClientSupervisors = {herp_client_sub_sup, {herp_client_sub_sup, start_link, []},
-                     transient, 5000, supervisor, [herp_client_sub_sup]},
+                         transient, 5000, supervisor, [herp_client_sub_sup]},
     
     Children = [ClientSupervisors],
     RestartStrategy = {simple_one_for_one, 5000, 26400},
