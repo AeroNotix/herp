@@ -43,7 +43,8 @@
 -define(SERVER, ?MODULE).
 
 %% gen_server behaviour
--export([start_link/1,code_change/3,handle_call/3,init/1,handle_cast/2,handle_info/2,terminate/2]).
+-export([start_link/1,code_change/3,handle_call/3,
+         init/1,handle_cast/2,handle_info/2,terminate/2]).
 
 %% Client API
 -export([new/2, quit/1]).
