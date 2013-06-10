@@ -89,7 +89,3 @@ init([]) ->
     Children = [RefRegister],
     RestartStrategy = {one_for_all, 3, 60},
     {ok, {RestartStrategy, Children}}.
-
-%%====================================================================
-%% Internal functions
-%%====================================================================
