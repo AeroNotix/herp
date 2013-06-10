@@ -52,6 +52,16 @@
 
 -define(SERVER, ?MODULE).
 
+%% When a Pid is retrieved we check if it's an alive Pid, if not we
+%% wait until this time has passed and then recheck it.
+-define(PID_DEATH_TIMER, 3000).
+%% If the Pid is truly dead and is not coming back, for example when
+%% herp_client:quit/1 was called on it, then we must be able to
+%% unblock callers after a given time. We define just how many times
+%% to timeout before giving up.
+-define(MAX_PID_DEATH_TIMEOUTS, 3).
+
+
 %%====================================================================
 %% External functions
 %%====================================================================
@@ -73,7 +83,24 @@ register(Ref, Pid) ->
 %% lookup/1 looks up a reference for it's associate Pid.
 %% @spec lookup(Ref::ref()) -> pid() | {error, Reason}
 lookup(Ref) ->
-    gen_server:call(?SERVER, {lookup, Ref}).
+    Pid = gen_server:call(?SERVER, {lookup, Ref}),
+    case is_process_alive(Pid) of
+        true ->
+            Pid;
+        _Else ->
+            timer:sleep(?PID_DEATH_TIMER),
+            lookup(Ref, ?MAX_PID_DEATH_TIMEOUTS)
+    end.
+
+lookup(Ref, N) ->
+    Pid = gen_server:call(?SERVER, {lookup, Ref}),
+    case is_process_alive(Pid) of
+        true ->
+            Pid;
+        _Else ->
+            timer:sleep(?PID_DEATH_TIMER),
+            lookup(Ref, N-1)
+    end.
 
 %% @doc
 %% delete/1 deletes any mapping between the Ref::ref() and the Pid::pid()
