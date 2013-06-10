@@ -84,12 +84,17 @@ register(Ref, Pid) ->
 %% @spec lookup(Ref::ref()) -> pid() | {error, Reason}
 lookup(Ref) ->
     Pid = gen_server:call(?SERVER, {lookup, Ref}),
-    case is_process_alive(Pid) of
-        true ->
-            Pid;
+    case Pid of
+        {error, Reason} ->
+            {error, Reason};
         _Else ->
-            timer:sleep(?PID_DEATH_TIMER),
-            lookup(Ref, ?MAX_PID_DEATH_TIMEOUTS)
+            case is_process_alive(Pid) of
+                true ->
+                    Pid;
+                _Else ->
+                    timer:sleep(?PID_DEATH_TIMER),
+                    lookup(Ref, ?MAX_PID_DEATH_TIMEOUTS)
+            end
     end.
 
 %% @doc
@@ -103,14 +108,18 @@ lookup(_Ref, 0) ->
 %% @spec lookup(Ref::ref(), N) -> Pid::pid()
 lookup(Ref, N) ->
     Pid = gen_server:call(?SERVER, {lookup, Ref}),
-    case is_process_alive(Pid) of
-        true ->
-            Pid;
+    case Pid of
+        {error, Reason} ->
+            {error, Reason};
         _Else ->
-            timer:sleep(?PID_DEATH_TIMER),
-            lookup(Ref, N-1)
+            case is_process_alive(Pid) of
+                true ->
+                    Pid;
+                _Else ->
+                    timer:sleep(?PID_DEATH_TIMER),
+                    lookup(Ref, N-1)
+            end
     end.
-
 %% @doc
 %% delete/1 deletes any mapping between the Ref::ref() and the Pid::pid()
 %% @spec delete(Ref::ref()) -> ok
