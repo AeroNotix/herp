@@ -92,7 +92,3 @@ init(State) ->
                          Restart, Shutdown, Type, [herp_client]},
 
     {ok, {SupFlags, [ClientSupervisors]}}.
-
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
