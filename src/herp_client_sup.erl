@@ -71,6 +71,11 @@
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
+%% @doc
+%% start_child/3 will dynamically add a new supervision tree for a new
+%% herp_client. Starting both the supervisor above the herp_client and
+%% the client itself.
+%% @spec start_child(Body::proplist(), TenantID::string(), Ref::ref()) -> ref()
 start_child(Body, TenantID, Ref) ->
 	supervisor:start_child(?SERVER, [{Body, TenantID, Ref}]).
 
@@ -83,9 +88,9 @@ start_child(Body, TenantID, Ref) ->
 %% herp_client_sup is a simple_one_for_one supervisor.
 %%
 %% The client which it is supervising is the real meat and potatoes of
-%% application. It's the herp_client process. We have a 5k/d max
-%% restart allowance.
-%%--------------------------------------------------------------------
+%% application. It's the herp_client_sub_sup process. We have a 5k/d
+%% max restart allowance.
+%% --------------------------------------------------------------------
 init([]) ->
     ClientSupervisors = {herp_client_sub_sup, {herp_client_sub_sup, start_link, []},
                      transient, 5000, supervisor, [herp_client_sub_sup]},
