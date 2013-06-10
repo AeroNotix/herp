@@ -40,10 +40,12 @@
 
 %% @doc
 %% create_server/2 will provision a new server instance in the HPCloud.
-%% @note you <em>must</em> provide:
+%% you <em>must</em> provide:
+%% ```
 %%    [{<<"flavorRef">>, ?FLAVOR_REF},
 %%     {<<"imageRef">>, ?IMAGE_REF},
 %%     {<<"name">>, string()}]
+%% '''
 %% @spec create_server(ClientRef::ref(), ServerProp::proplist()) -> ok | {error, {Field::atom(), Reason}}
 create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
     Name = proplists:get_value(<<"name">>, ServerProp),
@@ -58,6 +60,10 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
             {error, {Field, missing}}
     end.
 
+%% @doc
+%% delete_server/2 will take a ServerID and schedule that server for
+%% termination.
+%% @spec delete_server(ClientRef::ref(), ServerID::binary()) -> ok | {error, Reason}
 delete_server(ClientRef, ServerID) ->
     gen_server:call(herp_refreg:lookup(ClientRef), {delete_server, ServerID}).
 
@@ -66,6 +72,7 @@ delete_server(ClientRef, ServerID) ->
 %% in the HPCloud. You shouldn't really need to use this as the list
 %% never really changes and we provide flavour/1 which holds all you
 %% need.
+%% @spec list_flavours(ClientRef::ref()) -> proplist()
 list_flavours(ClientRef) ->
     list_endpoint(ClientRef, list_flavours).
 
@@ -73,6 +80,7 @@ list_flavours(ClientRef) ->
 %% list_images/1 returns a proplist with all the available images in
 %% the HPCloud. The images are fully listed and can be used to
 %% provision new servers.
+%% @spec list_images(ClientRef::ref()) -> proplist()
 list_images(ClientRef) ->
     list_endpoint(ClientRef, list_images).
 
@@ -93,7 +101,7 @@ verify_compute_request([H|T]) ->
 %% @doc
 %% The compute API has a very clear outline for the different kinds of
 %% errors which it handles. They are all in the form:
-%%
+%% ```
 %% {
 %%      $REASON: {
 %%          "message": $MESSAGE,
@@ -101,7 +109,7 @@ verify_compute_request([H|T]) ->
 %%          "detail" : $DETAIL
 %%      }
 %% }
-%%
+%% '''
 %% @spec error(Status::ref(), Body::proplist()) -> Exit | {error, Reason}
 error(Status, Body) ->
     case Status of
