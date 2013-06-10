@@ -51,9 +51,9 @@ start_child(Body, TenantID, Ref) ->
 %% restart allowance.
 %%--------------------------------------------------------------------
 init([]) ->
-    ClientWorkers = {herp_client, {herp_client, start_link, []},
-                     transient, 5000, worker, [herp_client]},
+    ClientSupervisors = {herp_client_sub_sup, {herp_client_sub_sup, start_link, []},
+                     transient, 5000, supervisor, [herp_client_sub_sup]},
     
-    Children = [ClientWorkers],
+    Children = [ClientSupervisors],
     RestartStrategy = {simple_one_for_one, 5000, 26400},
     {ok, {RestartStrategy, Children}}.
