@@ -110,6 +110,9 @@ verify_compute_request([H|T]) ->
 %%      }
 %% }
 %% '''
+%%
+%% This function will retreive the specific body for each message and
+%% return the correct message for it.
 %% @spec error(Status::ref(), Body::proplist()) -> Exit | {error, Reason}
 error(Status, Body) ->
     case Status of
