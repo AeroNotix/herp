@@ -101,9 +101,19 @@ upload_file(ClientRef, File, Container, Options, Timeout) ->
             {error, Reason}
     end.
 
+%% @doc
+%% copy_file/3 will copy from From into To.
+%% @spec copy_file(ClientRef::ref(), From::string(), To::string()) -> ok | {error, Reason}
 copy_file(ClientRef, From, To) ->
     copy_file(ClientRef, From, To, []).
 
+%% @doc
+%% copy_file/3 will copy from From into To.
+%% @spec copy_file(ClientRef::ref(), From::string(), To::string(), Options::Options) -> ok | {error, Reason}
+%%   Options = [Option]
+%%   Option = {Key, Value}
+%%   Key = string()
+%%   Value = string()
 copy_file(ClientRef, From, To, Options) ->
     gen_server:call(herp_refreg:lookup(ClientRef),
                     {copy_file, From, To, Options}, 30000).
