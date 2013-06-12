@@ -97,6 +97,7 @@ handle_call({list, Container}, _From, State) ->
             {reply, {error, Else}, State}
     end;
 
+%% @doc Creates a new container/directory in the object store.
 handle_call({create_directory, Container, Options}, _From, State) when Container =/= "" ->
     URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container,
     Request = {URL, base_headers(State) ++ Options, "application/directory", <<"">>},
