@@ -113,5 +113,5 @@ copy_file(ClientRef, From, To, Options) ->
 %% binary.
 %% @spec hash_file(Contents::binary()) -> string()
 hash_file(Contents) ->
-    << M: 128>> = crypto:md5(Contents),
+    << M: 128>> = crypto:hash(md5, Contents),
     lists:flatten(io_lib:format("~32.15.0b", [M])).
