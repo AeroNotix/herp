@@ -38,7 +38,8 @@
 
 %% Public API
 -export([list/1, list/2, create_directory/2, create_directory/3,
-         upload_file/3, upload_file/4, upload_file/5]).
+         upload_file/3, upload_file/4, upload_file/5, copy_file/3,
+         copy_file/4]).
 
 %% @doc
 %% list/1 will list all the base containers which are available to
@@ -99,6 +100,13 @@ upload_file(ClientRef, File, Container, Options, Timeout) ->
         {error, Reason} ->
             {error, Reason}
     end.
+
+copy_file(ClientRef, From, To) ->
+    copy_file(ClientRef, From, To, []).
+
+copy_file(ClientRef, From, To, Options) ->
+    gen_server:call(herp_refreg:lookup(ClientRef),
+                    {copy_file, From, To, Options}, 30000).
 
 %% @doc
 %% hash_file/1 will take a Binary and return the md5sum of that

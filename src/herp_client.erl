@@ -131,6 +131,24 @@ handle_call({create_file, Container, FileContents, Filename, Options}, _From, St
             {reply, {error, hash_mismatch}, State}
     end;
 
+handle_call({copy_file, From, To, Headers}, _From, State) ->
+    httpc:set_options([{verbose, false}]),
+    URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ To,
+    AllHeaders = base_headers(State) ++ Headers ++ [{"X-Copy-From", From},
+                                                    {"Content-length", "0"}],
+    io:format("~p~n", [AllHeaders]),
+    ContentType = "application/json",
+    Body = <<"">>,
+    Request = {URL,  AllHeaders, ContentType, Body},
+    Response = httpc:request(put, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
+    case Status of
+        201 ->
+            ok;
+        _Else ->
+            {reply, {error,Status}, State}
+    end;
+
 handle_call({create_server, Body}, _From, State) ->
     URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/servers",
     Request = {URL, base_headers(State), "application/json", Body},
