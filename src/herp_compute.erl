@@ -51,7 +51,7 @@ create_server(ClientRef, ServerProp) when is_list(ServerProp) ->
     Name = proplists:get_value(<<"name">>, ServerProp),
     Flavor = proplists:get_value(<<"flavorRef">>, ServerProp),
     ImageRef = proplists:get_value(<<"imageRef">>, ServerProp),
-    case verify_compute_request([Name, Flavor, ImageRef]) of
+    case herp_generic:verify_plist([Name, Flavor, ImageRef]) of
         ok ->
             S = [{<<"server">>, ServerProp}],
             ServerEncoded = jsx:encode(S),
@@ -83,20 +83,6 @@ list_flavours(ClientRef) ->
 %% @spec list_images(ClientRef::ref()) -> proplist()
 list_images(ClientRef) ->
     list_endpoint(ClientRef, list_images).
-
-%% @doc
-%% verify_compute_request/1 will take a list of values and if any are
-%% undefined return an error. We can use this to simplify checking
-%% input proplists to functions like create_server/2
-verify_compute_request([]) ->
-    ok;
-verify_compute_request([H|T]) ->
-    case H of
-        undefined ->
-            {error, H};
-        _Else ->
-            verify_compute_request(T)
-    end.
 
 %% @doc
 %% The compute API has a very clear outline for the different kinds of
