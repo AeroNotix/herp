@@ -143,7 +143,7 @@ handle_call({copy_file, From, To, Headers}, _From, State) ->
     {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
     case Status of
         201 ->
-            ok;
+            {reply, ok, State};
         _Else ->
             {reply, {error,Status}, State}
     end;
