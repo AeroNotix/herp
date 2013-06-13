@@ -37,7 +37,7 @@
 -module(herp_block).
 
 %% Public API
--export([create_block/2, create_block/3, delete_block/2, list_volumes/1]).
+-export([create_block/2, create_block/3, delete_block/2, list_volumes/1, error/2]).
 
 %% @doc
 %% create_block/2 will create a block storage device in the HPCloud
@@ -68,3 +68,6 @@ delete_block(ClientRef, ID) ->
 list_volumes(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef),
 					list_volumes).
+
+error(Status, _Resp) ->
+	{error, Status}.
