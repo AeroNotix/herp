@@ -37,5 +37,9 @@
 -module(herp_cdn).
 -export([list_containers/1]).
 
+%% @doc
+%% list_containers/1 will list the CDN enabled containers available to
+%% your HPCloud account.
+%% @spec list_containers(ClientRef::ref()) -> proplist() | {error, Reason}
 list_containers(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), list_containers).
