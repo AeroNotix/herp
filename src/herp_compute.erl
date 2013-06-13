@@ -36,7 +36,7 @@
 
 -module(herp_compute).
 
--export([create_server/2, list_flavours/1, list_images/1, error/2, flavour/1]).
+-export([create_server/2, delete_server/2, list_flavours/1, list_images/1, error/2, flavour/1]).
 
 %% @doc
 %% create_server/2 will provision a new server instance in the HPCloud.
