@@ -39,18 +39,32 @@
 %% Public API
 -export([create_block/2, create_block/3, delete_block/2, list_volumes/1]).
 
+%% @doc
+%% create_block/2 will create a block storage device in the HPCloud
+%% with the given size.
+%% @spec create_block(ClientRef::ref(), Size::integer()) -> ok | {error, Reason}
 create_block(ClientRef, Size) ->
 	create_block(ClientRef, Size, []).
 
+%% @doc
+%% create_block/2 will create a block storage device in the HPCloud
+%% with the given size as well as setting the options Metadata correctly.
+%% @spec create_block(ClientRef::ref(), Size::integer(), Options::list()) -> ok | {error, Reason}
 create_block(ClientRef, Size, Options) ->
 	AllOptions = Options ++ [{<<"size">>, Size}],
 	gen_server:call(herp_refreg:lookup(ClientRef),
 					{create_block, jsx:encode([{<<"volume">>, AllOptions}])}, 30000).
 
+%% @doc
+%% delete_block/2 will delete a block storage device from the HPCloud.
+%% @spec delete_block(ClientRef::ref(), ID::integer()) -> ok | {error, Reason}
 delete_block(ClientRef, ID) ->
 	gen_server:call(herp_refreg:lookup(ClientRef),
 					{delete_block, ID}).
 
+%% @doc
+%% list_volumes/1 will list all the available volumes you have in your account.
+%% @spec list_volumes(ClientRef::ref()) -> proplist()
 list_volumes(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef),
 					list_volumes).
