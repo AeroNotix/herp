@@ -1,5 +1,5 @@
 {application,herp,
-             [{description,"HPCloud bindings"},
+             [{description,"A highly-available HPCloud client."},
               {vsn,"1"},
               {registered,[]},
               {applications,[asn1,crypto,inets,kernel,mimetypes,observer,
