@@ -178,6 +178,20 @@ handle_call({create_block, Body}, _From, State) ->
 			{reply, Reply, State}
 	end;
 
+handle_call({delete_block, ID}, _From, State) ->
+	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes/" ++
+		integer_to_list(ID),
+	Request = {URL, base_headers(State)},
+	Response = httpc:request(delete, Request, [], []),
+	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+	case Status of
+		202 ->
+			{reply, ok, State};
+		_Else ->
+			Reply = herp_block:error(Status, Resp),
+			{reply, Reply, State}
+	end;
+
 handle_call(list_flavours, _From, State) ->
     URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/flavors",
     list_endpoint(URL, State);

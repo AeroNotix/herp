@@ -37,7 +37,7 @@
 -module(herp_block).
 
 %% Public API
--export([create_block/2, create_block/3, list_volumes/1]).
+-export([create_block/2, create_block/3, delete_block/2, list_volumes/1]).
 
 create_block(ClientRef, Size) ->
 	create_block(ClientRef, Size, []).
@@ -46,6 +46,10 @@ create_block(ClientRef, Size, Options) ->
 	AllOptions = Options ++ [{<<"size">>, Size}],
 	gen_server:call(herp_refreg:lookup(ClientRef),
 					{create_block, jsx:encode([{<<"volume">>, AllOptions}])}, 30000).
+
+delete_block(ClientRef, ID) ->
+	gen_server:call(herp_refreg:lookup(ClientRef),
+					{delete_block, ID}).
 
 list_volumes(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef),
