@@ -35,7 +35,7 @@
 %%% SUCH DAMAGE.
 
 -module(herp_cdn).
--export([list_containers/1]).
+-export([list_containers/1, enable_container/2, enable_container/3]).
 
 %% @doc
 %% list_containers/1 will list the CDN enabled containers available to
@@ -43,3 +43,9 @@
 %% @spec list_containers(ClientRef::ref()) -> proplist() | {error, Reason}
 list_containers(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), list_containers).
+
+enable_container(ClientRef, Container) ->
+	enable_container(ClientRef, Container, 86400).
+
+enable_container(ClientRef, Container, TTL) ->
+	gen_server:call(herp_refreg:lookup(ClientRef), {enable_container, Container, TTL}, 30000).
