@@ -93,7 +93,7 @@ lookup(Ref) ->
             case is_process_alive(Pid) of
                 true ->
                     Pid;
-                _Else ->
+                _Else2 ->
                     timer:sleep(?PID_DEATH_TIMER),
                     lookup(Ref, ?MAX_PID_DEATH_TIMEOUTS)
             end
@@ -117,7 +117,7 @@ lookup(Ref, N) ->
             case is_process_alive(Pid) of
                 true ->
                     Pid;
-                _Else ->
+                _Else2 ->
                     timer:sleep(?PID_DEATH_TIMER),
                     lookup(Ref, N-1)
             end
