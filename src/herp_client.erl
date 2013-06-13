@@ -41,6 +41,7 @@
 -define(REGION_URL,  "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
 -define(COMPUTE_URL, "https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/").
 -define(BLOCK_URL, "https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/").
+-define(CDN_URL, "https://region-b.geo-1.cdnmgmt.hpcloudsvc.com/v1.0/").
 -define(SERVER, ?MODULE).
 
 %% gen_server behaviour
@@ -202,6 +203,10 @@ handle_call(list_images, _From, State) ->
 
 handle_call(list_volumes, _From, State) ->
 	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes",
+	list_endpoint(URL, State);
+
+handle_call(list_containers, _From, State) ->
+	URL = ?CDN_URL ++ State#client.tokenid ++ "?format=json",
 	list_endpoint(URL, State).
 
 handle_cast({quit, ClientRef}, State) ->
