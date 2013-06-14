@@ -107,6 +107,17 @@ handle_call({create_directory, Container, Options}, _From, State) when Container
     end;
 
 %% @doc
+%% handle_call/3 (create_file) will take a Container and some binary
+%% term and put that data into the container with the associated
+%% Filename.
+%%
+%% This function will also take care of end-to-end integrity by
+%% hashing the input file via md5 and comparing the returning md5
+%% value with that. We do this to ensure that the file is not
+%% corrupted in-flight.
+%%
+%% @spec handle_call({create_file::atom(), Container::string(), FileContents::iolist(),
+%% Filename::string(), Options::list()}, _From::pid(), State::list()) -> ok | {error, Reason}
 handle_call({create_file, Container, FileContents, Filename, Options}, _From, State) ->
     ContentType = proplists:get_value("Content-Type", Options),
     URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container ++ "/" ++ Filename,
