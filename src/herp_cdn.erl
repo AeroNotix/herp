@@ -35,17 +35,31 @@
 %%% SUCH DAMAGE.
 
 -module(herp_cdn).
--export([list_containers/1, enable_container/2, enable_container/3]).
+-export([list_containers/1, enable_container/2, enable_container/3, disable_container/2]).
 
 %% @doc
-%% list_containers/1 will list the CDN enabled containers available to
+%% list_containers/1 will list the CDN-enabled containers available to
 %% your HPCloud account.
 %% @spec list_containers(ClientRef::ref()) -> proplist() | {error, Reason}
 list_containers(ClientRef) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), list_containers).
 
+%% @doc
+%% enable_container/2 will CDN-enable a container.
+%% specified amount.
+%% @spec enable_container(ClientRef::ref(), Container::string()) -> ok | {error, Reason}
 enable_container(ClientRef, Container) ->
 	enable_container(ClientRef, Container, 86400).
 
+%% @doc
+%% enable_container/3 will CDN-enable a container and set it's TTL to the
+%% specified amount.
+%% @spec enable_container(ClientRef::ref(), Container::string(), TTL:integer()) -> ok | {error, Reason}
 enable_container(ClientRef, Container, TTL) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {enable_container, Container, TTL}, 30000).
+
+%% @doc
+%% disable_container/2 will disable a CDN-enabled container.
+%% @spec disable_container(ClientRef::ref(), Container::string()) -> ok | {eror, Reason}
+disable_container(ClientRef, Container) ->
+    gen_server:call(herp_refreg:lookup(ClientRef), {disable_container, Container}, 30000).
