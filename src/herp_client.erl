@@ -89,15 +89,7 @@ handle_call({list, Container}, _From, State) ->
               _Else ->
                   ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ Container
           end,
-    Request = {URL, base_headers(State)},
-    Response = httpc:request(get, Request, [], []),
-    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-    case Status of
-        200 ->
-            {reply, jsx:decode(list_to_binary(Resp)), State};
-        Else ->
-            {reply, {error, Else}, State}
-    end;
+    list_endpoint(URL, State);
 
 %% @doc Creates a new container/directory in the object store.
 handle_call({create_directory, Container, Options}, _From, State) when Container =/= "" ->
