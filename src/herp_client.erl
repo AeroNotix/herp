@@ -279,12 +279,20 @@ list_endpoint(URL, State) ->
             {reply, {error, Status}, State}
     end.
 
+%% @doc
+%% generic_request/4 is a way of handling generic HTTP POST requests
+%% which have no special need to set their body and the accompanying
+%% Content-Type.
+%% @spec generic_request(post, State::record(), URL::string(), Headers::list()) -> integer()
 generic_request(post, State, URL, Headers) ->
     Request = {URL, base_headers(State) ++ Headers, "", <<"">>},
     Response = httpc:request(post, Request, [], []),
     {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
     Status.
 
+%% @doc
+%% generic_request/3 is a way of handling generic HTTP DELETE requests.
+%% @spec generic_request(atom(), State::integer(), URL::string()) -> {Status::integer(), Resp::binary()}
 generic_request(delete, State, URL) ->
     Request = {URL, base_headers(State)},
     Response = httpc:request(delete, Request, [], []),
