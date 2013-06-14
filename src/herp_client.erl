@@ -136,7 +136,6 @@ handle_call({create_file, Container, FileContents, Filename, Options}, _From, St
     end;
 
 handle_call({copy_file, From, To, Headers}, _From, State) ->
-    httpc:set_options([{verbose, false}]),
     URL = ?OBJECT_URL ++ State#client.tokenid ++ "/" ++ To,
     AllHeaders = base_headers(State) ++ Headers ++ [{"X-Copy-From", From},
                                                     {"Content-length", "0"}],
