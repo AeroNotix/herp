@@ -211,20 +211,27 @@ handle_call(list_containers, _From, State) ->
 
 handle_call({enable_container, Container, TTL}, _From, State) ->
 	URL = ?CDN_URL ++ State#client.tokenid ++ "/" ++ Container,
-	io:format("~n~p", [URL]),
-	Body = <<"">>,
-	ContentType = "",
-	Request = {URL, base_headers(State) ++ [{"X-TTL", TTL}], ContentType, Body},
-	Response = httpc:request(put, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
-	case Status of
+	Headers = [{"X-TTL", integer_to_list(TTL)}],
+    Status = generic_request(post, State, URL, Headers),
+    case Status of
 		201 ->
 			{reply, ok, State};
 		202 ->
 			{reply, ok, State};
 		_Else ->
 			{reply, {error, Status}, State}
-	end.
+	end;
+
+handle_call({disable_container, Container}, _From, State) ->
+    URL = ?CDN_URL ++ State#client.tokenid ++ "/" ++ Container,
+    Headers = [{"X-CDN-Enabled", "False"}],
+    Status = generic_request(post, State, URL, Headers),
+    case Status of
+        202 ->
+            {reply, ok, State};
+        _Else ->
+            {reply, {error, Status}, State}
+    end.
 
 handle_cast({quit, ClientRef}, State) ->
     Reason = normal,
@@ -282,3 +289,9 @@ list_endpoint(URL, State) ->
         _Else ->
             {reply, {error, Status}, State}
     end.
+
+generic_request(post, State, URL, Headers) ->
+    Request = {URL, base_headers(State) ++ Headers, "", <<"">>},
+    Response = httpc:request(post, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
+    Status.
