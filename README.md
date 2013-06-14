@@ -6,14 +6,39 @@ HPCloud OpenStack bindings in Erlang
 
 Currently you can:
 
+Identity
+--------
+
 * Login
-* List Containers
-* Create Containers
-* Upload Files
+
+Compute
+-------
+
 * Provision servers
 * Delete servers
 * List Images you have
 * List Flavours available
+
+Block
+-----
+
+* Create block storage
+* Delete block storage
+* List block storage
+
+Object
+------
+
+* Upload Files
+* Delete Files
+
+CDN
+---
+
+* List Containers
+* Create Containers
+* Enable CDN containers
+* Disable CDN containers
 
 By providing a sys.config file you can login via
 `herp_identity:login_conf`, otherwise you can provide them directly.
