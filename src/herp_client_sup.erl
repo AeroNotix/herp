@@ -77,7 +77,7 @@ start_link() ->
 %% the client itself.
 %% @spec start_child(Body::proplist(), TenantID::string(), Ref::ref()) -> ref()
 start_child(Body, TenantID, Ref) ->
-	supervisor:start_child(?SERVER, [{Body, TenantID, Ref}]).
+    supervisor:start_child(?SERVER, [{Body, TenantID, Ref}]).
 
 %%====================================================================
 %% Server functions
@@ -94,7 +94,7 @@ start_child(Body, TenantID, Ref) ->
 init([]) ->
     ClientWorkers = {herp_client, {herp_client, start_link, []},
                      transient, 5000, worker, [herp_client]},
-   
+
     Children = [ClientWorkers],
     RestartStrategy = {simple_one_for_one, 5000, 26400},
     {ok, {RestartStrategy, Children}}.

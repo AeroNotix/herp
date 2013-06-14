@@ -46,7 +46,7 @@
 %% where
 %%   Pid = pid()
 login(Username, Password, TenantID) ->
-	Body = create_auth_body(Username, Password, TenantID),
+    Body = create_auth_body(Username, Password, TenantID),
     herp_client:new(Body, TenantID).
 
 %% @doc login_conf uses the login details supplied in the sys.config
@@ -64,12 +64,12 @@ login_conf() ->
 %% details with a JSON body.
 %% @private
 create_auth_body(Username, Password, TenantID) ->
-	U = list_to_binary(Username),
-	P = list_to_binary(Password),
-	T = list_to_binary(TenantID),
-	Body = [{<<"auth">>,
-			 [{<<"passwordCredentials">>,
-			   [{<<"username">>, U},
-				{<<"password">>, P}]},
-			  {<<"tenantId">>, T}]}],
-	jsx:encode(Body).
+    U = list_to_binary(Username),
+    P = list_to_binary(Password),
+    T = list_to_binary(TenantID),
+    Body = [{<<"auth">>,
+             [{<<"passwordCredentials">>,
+               [{<<"username">>, U},
+                {<<"password">>, P}]},
+              {<<"tenantId">>, T}]}],
+    jsx:encode(Body).

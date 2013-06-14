@@ -81,7 +81,7 @@ start_link() ->
 %% Func: init/1
 %% Returns: {ok,  {SupFlags,  [ChildSpec]}} |
 %%          ignore                          |
-%%          {error, Reason}   
+%%          {error, Reason}
 %%--------------------------------------------------------------------
 init([]) ->
     RefRegister = {herp_refreg, {herp_refreg, start_link, []},

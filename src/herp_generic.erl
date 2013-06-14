@@ -42,11 +42,11 @@
 %% undefined return an error. We can use this to simplify checking
 %% input proplists to functions like create_server/2
 verify_plist([]) ->
-	ok;
+    ok;
 verify_plist([H|T]) ->
-	case H of
-		undefined ->
-			{error, H};
-		_Else ->
-			verify_plist(T)
-	end.
+    case H of
+        undefined ->
+            {error, H};
+        _Else ->
+            verify_plist(T)
+    end.
