@@ -173,9 +173,7 @@ handle_call({create_block, Body}, _From, State) ->
 handle_call({delete_block, ID}, _From, State) ->
 	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes/" ++
 		integer_to_list(ID),
-	Request = {URL, base_headers(State)},
-	Response = httpc:request(delete, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    {Status, Resp} = generic_request(delete, State, URL),
 	case Status of
 		202 ->
 			{reply, ok, State};
@@ -286,3 +284,9 @@ generic_request(post, State, URL, Headers) ->
     Response = httpc:request(post, Request, [], []),
     {ok, {{_HTTP, Status, _Msg}, _Headers, _Resp}} = Response,
     Status.
+
+generic_request(delete, State, URL) ->
+    Request = {URL, base_headers(State)},
+    Response = httpc:request(delete, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    {Status, Resp}.
