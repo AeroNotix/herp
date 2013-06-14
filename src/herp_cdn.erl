@@ -54,7 +54,7 @@ enable_container(ClientRef, Container) ->
 %% @doc
 %% enable_container/3 will CDN-enable a container and set it's TTL to the
 %% specified amount.
-%% @spec enable_container(ClientRef::ref(), Container::string(), TTL:integer()) -> ok | {error, Reason}
+%% @spec enable_container(ClientRef::ref(), Container::string(), TTL::integer()) -> ok | {error, Reason}
 enable_container(ClientRef, Container, TTL) ->
 	gen_server:call(herp_refreg:lookup(ClientRef), {enable_container, Container, TTL}, 30000).
 
