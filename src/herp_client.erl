@@ -37,8 +37,8 @@
 -module(herp_client).
 -behaviour(gen_server).
 
--define(OBJECT_URL,  "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
--define(REGION_URL,  "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
+-define(OBJECT_URL, "https://region-b.geo-1.objects.hpcloudsvc.com/v1.0/").
+-define(REGION_URL, "https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/").
 -define(COMPUTE_URL, "https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/").
 -define(BLOCK_URL, "https://az-1.region-a.geo-1.compute.hpcloudsvc.com/v1.1/").
 -define(CDN_URL, "https://region-b.geo-1.cdnmgmt.hpcloudsvc.com/v1.0/").
@@ -168,30 +168,30 @@ handle_call({create_server, Body}, _From, State) ->
     end;
 
 handle_call({create_block, Body}, _From, State) ->
-	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes",
-	Request = {URL, base_headers(State), "application/json",
-			   Body},
-	Response = httpc:request(post, Request, [], []),
-	{ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
-	case Status of
-		200 ->
-			{reply, ok, State};
-		_Else ->
-			Reply = herp_block:error(Status, Resp),
-			{reply, Reply, State}
-	end;
+    URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes",
+    Request = {URL, base_headers(State), "application/json",
+               Body},
+    Response = httpc:request(post, Request, [], []),
+    {ok, {{_HTTP, Status, _Msg}, _Headers, Resp}} = Response,
+    case Status of
+        200 ->
+            {reply, ok, State};
+        _Else ->
+            Reply = herp_block:error(Status, Resp),
+            {reply, Reply, State}
+    end;
 
 handle_call({delete_block, ID}, _From, State) ->
-	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes/" ++
-		integer_to_list(ID),
+    URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes/" ++
+        integer_to_list(ID),
     {Status, Resp} = generic_request(delete, State, URL),
-	case Status of
-		202 ->
-			{reply, ok, State};
-		_Else ->
-			Reply = herp_block:error(Status, Resp),
-			{reply, Reply, State}
-	end;
+    case Status of
+        202 ->
+            {reply, ok, State};
+        _Else ->
+            Reply = herp_block:error(Status, Resp),
+            {reply, Reply, State}
+    end;
 
 handle_call(list_flavours, _From, State) ->
     URL = ?COMPUTE_URL ++ State#client.tokenid ++ "/flavors",
@@ -202,25 +202,25 @@ handle_call(list_images, _From, State) ->
     list_endpoint(URL, State);
 
 handle_call(list_volumes, _From, State) ->
-	URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes",
-	list_endpoint(URL, State);
+    URL = ?BLOCK_URL ++ State#client.tokenid ++ "/os-volumes",
+    list_endpoint(URL, State);
 
 handle_call(list_containers, _From, State) ->
-	URL = ?CDN_URL ++ State#client.tokenid ++ "?format=json",
-	list_endpoint(URL, State);
+    URL = ?CDN_URL ++ State#client.tokenid ++ "?format=json",
+    list_endpoint(URL, State);
 
 handle_call({enable_container, Container, TTL}, _From, State) ->
-	URL = ?CDN_URL ++ State#client.tokenid ++ "/" ++ Container,
-	Headers = [{"X-TTL", integer_to_list(TTL)}],
+    URL = ?CDN_URL ++ State#client.tokenid ++ "/" ++ Container,
+    Headers = [{"X-TTL", integer_to_list(TTL)}],
     Status = generic_request(post, State, URL, Headers),
     case Status of
-		201 ->
-			{reply, ok, State};
-		202 ->
-			{reply, ok, State};
-		_Else ->
-			{reply, {error, Status}, State}
-	end;
+        201 ->
+            {reply, ok, State};
+        202 ->
+            {reply, ok, State};
+        _Else ->
+            {reply, {error, Status}, State}
+    end;
 
 handle_call({disable_container, Container}, _From, State) ->
     URL = ?CDN_URL ++ State#client.tokenid ++ "/" ++ Container,
